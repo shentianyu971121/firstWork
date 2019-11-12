@@ -13,5 +13,21 @@
 </head>
 <body>
 	<h1>${info }</h1>
+	<div class="container" style="background-color: skyblue">
+		container
+	</div>
+	<div class="container-fluid" style="background-color: red">
+		contaner-fluid
+		<div class="row">
+			<!-- md的大小长度为12 -->
+			<div class="col-md-6 row" style="background: url(/resource/images/1.jpg) no-repeat; height: 300px">
+				<div class="col-md-4"  style="background: url(/resource/images/2.jpg) no-repeat; height: 100px"></div>
+				<div class="col-md-4"  style="background: url(/resource/images/2.jpg) no-repeat; height: 200px"></div>
+				<div class="col-md-4"  style="background: url(/resource/images/2.jpg) no-repeat; height: 300px"></div>
+			</div>
+			<div class="col-md-6" style="background: url('/resource/images/3.jpg') no-repeat; height: 300px"></div>
+		</div>
+		
+	</div>
 </body>
 </html>
