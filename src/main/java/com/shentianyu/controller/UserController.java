@@ -13,6 +13,6 @@ public class UserController {
 	@RequestMapping(value = "hellow", method = RequestMethod.GET)
 	public String userTest(HttpServletRequest request) {
 		request.setAttribute("info", "Hellow");
-		return "test/hellow";
+		return "test/interLoad";
 	}
 }
