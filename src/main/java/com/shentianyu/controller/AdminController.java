@@ -12,6 +12,6 @@ public class AdminController {
 	@RequestMapping("test")
 	public String testAdmin(HttpServletRequest request) {
 		
-		return "show/index";
+		return "show/index2";
 	}
 }
