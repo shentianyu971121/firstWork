@@ -35,6 +35,8 @@
     </div>
     </div>
 </nav>
+
+
 <div class="row">
 	<div class="col-md-2">
 		<div style="margin-left:20px ">
@@ -49,7 +51,7 @@
 			  	</ul>
 			  </li>
 			  <li class="divider"></li>
-			  <li><a href="javascript:showF('/user/hellow')">用户管理</a></li>
+			  <li><a href="javascript:showF('/admin/users')">用户管理</a></li>
 			</ul>
 		</div>
 	</div>
@@ -57,7 +59,6 @@
 		<div id="content"></div>
 	</div>
 </div>
-
 
 <nav class="navbar navbar-inverse navbar-fixed-bottom" 
 role="navigation">

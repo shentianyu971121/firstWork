@@ -2,6 +2,25 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sty.dao.GoodsMapper">
-
+<mapper namespace="com.shentianyu.dao.UserMapper">
+	<resultMap type="com.shentianyu.entity.User" id="userMap">
+		<id column="id" property="id"/>
+		<result column="gender" property="gender" javaType="com.shentianyu.entity.Gender" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+	</resultMap>
+	<!-- 直接进行查询 -->
+	<select id="getUserList" resultMap="userMap">
+		SELECT * FROM cms_user
+		<where>
+			<if test="null != mohu and mohu != ''">
+				and username like '%${mohu}%'
+			</if>
+		</where>
+	</select>
+	<!-- 根据id查询user对象 -->
+	<select id="getUserById" resultMap="userMap">
+		SELECT * FROM cms_user where id = ${userId}
+	</select>
+	
+	
+	
 </mapper>

@@ -15,4 +15,13 @@ public class UserController {
 		request.setAttribute("info", "Hellow");
 		return "test/interLoad";
 	}
+	
+	
+	
+	@RequestMapping("userMain")
+	public String userMain(HttpServletRequest request) {
+		
+		return "user/userList";
+	}
+	
 }
