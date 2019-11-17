@@ -3,18 +3,25 @@
 PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+	<settings>
+		<setting name="logImpl" value="STDOUT_LOGGING"/>
+	</settings>
 
-<!-- 别名配置 -->
- <typeAliases>
-    <!-- todo -->
-   <package name="com.shentianyu.entity"/>
-   <!-- todo -->
-   <package name="com.shentianyu.vo"/>
- </typeAliases>
+	<!-- 别名配置 -->
+	 <typeAliases>
+	    <!-- todo -->
+	   <package name="com.shentianyu.entity"/>
+	   <!-- todo -->
+	   <package name="com.shentianyu.vo"/>
+	 </typeAliases>
  
- <!-- 配置分页助手拦截器 -->
-<plugins>
- <plugin interceptor="com.github.pagehelper.PageInterceptor"></plugin>
+ 	
  
- </plugins>
+	 <!-- 配置分页助手拦截器 -->
+	<plugins>
+	 <plugin interceptor="com.github.pagehelper.PageInterceptor"></plugin>
+	 </plugins>
+ 
+ 
+ 
 </configuration>

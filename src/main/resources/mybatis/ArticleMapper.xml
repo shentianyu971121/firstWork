@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shentianyu.dao.ArticleMapper">
+	<!-- 因为文章里面有各种累 频道 分类 被 user类 -->
+	<resultMap type="com.shentianyu.entity.Article" id="articleMap">
+		<id column="id" property="id"/>
+		<!-- 然后就是文章类里面的三个属性 设置频道   然后直接调用其他接口里面的查询方法进行查询 -->
+		<association property="channel" column="channel_id" select="com.shentianyu.dao.ChannelMapper.findById"  />
+		<association property="user" column="user_id" select="com.shentianyu.dao.UserMapper.findUserById"  />
+		<association property="category" column="category_id" select="com.shentianyu.dao.CategoryMapper.findById"  />
+	</resultMap>
+	
+	<!-- 首先是热门展示   展示所有的信息 -->
+	<select id="getHotList" resultMap="articleMap">
+			SELECT id,title,picture,channel_id,category_id,user_id,hits,commentCnt,created
+			FROM cms_article 
+			WHERE deleted=0 AND status=1 AND hot=1
+	</select>
+	<!-- 展示最新的信息 -->
+	<select id="getNewArticles" resultType="com.shentianyu.entity.Article">
+		SELECT id,title FROM cms_article 
+		WHERE deleted=0 AND status=1 
+		ORDER BY created DESC  limit ${value}
+	</select>
+	<!--根据频道ID或者分类 ID 查询 出内容  -->
+	<select id="getListByCat" resultMap="articleMap">
+		select id,title,content,picture,channel_id,category_id,
+		user_id,hits,hot,status,deleted,created,updated,commentCnt, 
+		articleType from cms_article
+		where deleted = 0 and status =  1 and channel_id = ${chnId}
+		<if test="categoryId != 0">
+			and category_id =  ${categoryId}
+		</if>
+		<!-- 这里面根据提交时间倒序 排列  因为平常展示 都是从最新的 开始展示 -->
+		order by created desc
+	</select>
+	<!-- 通过制定id查询出来对象  并且未被 逻辑删除 审核通过的 -->
+	<select id="getArticliById" resultMap="articleMap">
+		select * from cms_article where id = ${articleId} and deleted = 0 and status =  1
+	</select>
+	
+</mapper>

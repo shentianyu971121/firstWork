@@ -22,11 +22,13 @@
 }
 .list-group li:hover{
 	background-color: skyblue;
+	
 }
 </style>
 
 <script type="text/javascript">
 	//给频道一个指定的点击事件
+	
 	$(function() {
 		$(".list-group a li").click(function() {
 			var url = $(this).attr("data");
@@ -35,33 +37,44 @@
 		})
 	})
 	
-	function goPage(page) {
-		var url = "/user/userMain?pageNum=" + page;
+	function gotoCat(categoryId) {
+		var url = "/user/channel?chnId=${chnId}&categoryId="+categoryId;
 		location = url;
 	}
+	
+	function goPage(page) {
+		var url = "/user/channel?pageNum=" + page + "&chnId=${chnId}&categoryId=${categoryId} ";
+		location = url;
+	}
+	
 	
 	function showArticle(articleId) {
 		//然后去查询一下详情内容
 		var url = "/article/showArticle?articleId="+articleId;
 		window.open(url);
 	}
+	
+	
+	
+	
 </script>
+
 </head>
 <body>
 
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
 	    <div class="navbar-header">
-	        <a class="navbar-brand" href="#">
-	        	<img alt="Main" src="/resource/images/logo.png" >
+	        <a class="navbar-brand" href="/user/userMain">
+	        	<img alt="Main" title="返回主界面" src="/resource/images/logo.png" >
 	        </a>
 	        <ul class="nav navbar-nav nav-pills" style="margin-left: 10px; margin-right: 100px">
-			   <li class="active"><a href="#">首页 <span class="badge">42</span></a></li>
+			   <li class="active"><a href="/user/userMain">首页 <span class="badge">32</span></a></li>
 			   <li><a href="#">简介</a></li>
-			   <li><a href="#">消息 <span class="badge">3</span></a></li>
+			   <li><a href="#">消息 <span class="badge">1</span></a></li>
 			</ul>
-	        
 	    </div>
+	    <div>
 	        <form class="navbar-form navbar-left" role="search">
 	            <div class="form-group">
 	                <input type="text" class="form-control" placeholder="Search">
@@ -75,7 +88,7 @@
 		      <li><a href="#"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
 		      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
 		    </ul>
-		    
+	        
 	    </div>
 	</div>
 </nav>
@@ -106,12 +119,11 @@
 	   </a>
 	  	<ul class="list-group">
 	  	<c:forEach items="${list }" var="list">
-	  	<a href="#"><li  class="list-group-item" data = "/user/channel?chnId=${list.id }">${list.name }</li></a>
+	  	<a href="#"><li  class="list-group-item ${list.id == chnId?"active":"" }" data = "/user/channel?chnId=${list.id }">${list.name }</li></a>
 	  	</c:forEach>
 		</ul>
 	</div>
 	<!-- 展示图片   就是优秀毕业人 -->
-	
 	  <div >
         <div class="thumbnail" align="center">
             <img src="/resource/images/1.jpg"
@@ -131,140 +143,68 @@
     </div>
 	</div>
 
-<!-- 中间 -->	
+<!-- 中间 ------------------------------------------------------- -->	
+
+
 <div class="col-md-7">
-		<!-- 轮播 -->
-<div id="myCarousel" class="carousel slide">
-   <!-- 轮播（Carousel）指标 -->
-   <ol class="carousel-indicators">
-      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-      <li data-target="#myCarousel" data-slide-to="1"></li>
-      <li data-target="#myCarousel" data-slide-to="2"></li>
-   </ol>   
-   <!-- 轮播（Carousel）项目 -->
-   <div class="carousel-inner">
-      <div class="item active">
-         <img style="height: 500px; width: 1110px"  src="/resource/images/cccc.jpg" alt="First slide">
-         <div class="carousel-caption">  </div>
-      </div>
-      <div class="item">
-         <img style="height: 500px; width: 1110px" src="/resource/images/6f0dbc455defeefb9c0319d864c5cf4b.jpg"  alt="Second slide">
-         <div class="carousel-caption">   </div>
-      </div>
-      <div class="item">
-         <img  style="height: 500px; width: 1110px"  src="/resource/images/dddd.jpg" alt="Third slide">
-         <div class="carousel-caption">    </div>
-      </div>
-   </div>
-   <!-- 轮播（Carousel）导航 -->
-   <a class="carousel-control left" href="#myCarousel" 
-      data-slide="prev">&lsaquo;</a>
-   <a class="carousel-control right" href="#myCarousel" 
-      data-slide="next">&rsaquo;</a>
-     </div>	
-	<!-- 轮播 -->
-	
-	<div class="row">
-	<!-- 文章开始------------------------------------------------------------------------- -->
-	<div class="col-md-7">
-	<c:forEach items="${hotList.list }" var="list" varStatus="index">
-	<!-- 左边信息展示 -->
-			<div class="bg-light text-dark" style=" margin-left: 18px; margin-top: 5px">
-				<div class="media">
-				   <a class="pull-left" href="#">
-				      <img class="media-object " src="/pic/${list.picture }" style="width: 80px; height: 80px"
-				      alt="Media Object">
-				   </a>
-				   <div class="media-body">
-				      <h4 class="media-heading">文章内容</h4>
-				      	<a href="javaScript:showArticle(${list.id })">${list.title }</a>
-				      	<br>
-				      	频道:<a>${list.channel.name }</a>
-				      	分类:<a>${list.category.name }</a>
-				      	<br>
-				      	<br>
-				      	${list.user.username }发布于<fmt:formatDate value="${list.created }" pattern="yyyy-MM-dd"/>
-				    </div> 
+<div>
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container-fluid">
+			<div>
+				<ul class="nav navbar-nav">
+					<li class = ${categoryId == 0?"active":"" }><a href="javaScript:gotoCat(0)">全部</a></li>
+					<c:forEach items="${categoryList }" var="cat">
+						<li class = ${cat.id == categoryId?"active":"" }><a href="javaScript:gotoCat(${cat.id })">${cat.name }</a></li>
+					</c:forEach>
+				</ul>
 			</div>
 		</div>
-		<c:if test="${hotList.list.size() == index.count }">
-			<div style=" margin-left: 18px; margin-top: -10px">
-			<!-- 分页左边信息展示 -->
-				<ul class="pagination">
-				  <li> <a href="javascript:goPage(${hotList.prePage })">&laquo;</a> </li>
-				  	<c:forEach begin="${hotList.pageNum - 2 > 1?hotList.pageNum - 2 : 1 }" end="${hotList.pageNum + 2 > hotList.pages?hotList.pages:hotList.pageNum + 2 }" varStatus="index">
-				  		<li> <a href="javascript:goPage(${index.index })">${index.index }</a> </li>
-				  	</c:forEach>
-				  <li> <a href="javascript:goPage(${hotList.nextPage })">&raquo;</a> </li>
-				  <li><span>当前${hotList.pageNum } / ${hotList.pages }页</span></li>
-				</ul>	
-			</div>
-		</c:if>
-	</c:forEach>
-	</div>
-		<!-- 文章列表展示结束*--------------------------------------------------------------------- -->
-		<div class="col-md-5">
-		<div style="margin-top: 10px"></div>
-	<div>
-			<div class="row">
-    <div class="col-sm-6 col-md-3">
-        <a href="#" class="thumbnail">
-            <img src="/resource/images/324682 - 副本.jpg"
-                 alt="通用的占位符缩略图">
-        </a>
-    </div>
-    <div class="col-sm-6 col-md-3">
-        <a href="#" class="thumbnail">
-            <img src="/resource/images/324682 - 副本.jpg"
-                 alt="通用的占位符缩略图">
-        </a>
-    </div>
-    <div class="col-sm-6 col-md-3">
-        <a href="#" class="thumbnail">
-            <img src="/resource/images/324682 - 副本.jpg"
-                 alt="通用的占位符缩略图">
-        </a>
-    </div>
-    <div class="col-sm-6 col-md-3">
-        <a href="#" class="thumbnail">
-            <img src="/resource/images/324682 - 副本.jpg"
-                 alt="通用的占位符缩略图">
-        </a>
-    </div>
+	</nav>
 </div>
-		</div>
-		<div class="progress progress-striped">
-		    <div class="progress-bar progress-bar-danger" role="progressbar"
-		         aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
-		         style="width: 20%;">
-		        <span class="sr-only">20% 完成（危险）</span>
-		    </div>
-		</div>
-		<div class="progress progress-striped">
-		    <div class="progress-bar progress-bar-warning" role="progressbar"
-		         aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
-		         style="width: 40%;">
-		        <span class="sr-only">40% 完成（警告）</span>
-		    </div>
-		</div>
-		<div class="progress progress-striped">
-		    <div class="progress-bar progress-bar-info" role="progressbar"
-		         aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
-		         style="width: 70%;">
-		        <span class="sr-only">70% 完成（信息）</span>
-		    </div>
-		</div>
-		<div class="progress progress-striped">
-		    <div class="progress-bar progress-bar-success" role="progressbar"
-		         aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
-		         style="width: 95%;">
-		        <span class="sr-only">95% 完成（成功）</span>
-		    </div>
-		</div>
-		</div>
-	</div>
-	</div>
-	<!-- 右边的上传文章 -->
+<!-- 展示信息 -->
+
+<!-- Article [id=117, title=文章图片,
+ content=[{"desc":"篮球","picUrl":"20191101/1225d76a-e68f-46cf-b12e-f7e4b14c329d.jpeg"},
+ {"desc":"小红花","picUrl":"20191101/ddf4b23d-7858-4dea-b24c-1eced5dd43fc.jpg"},
+ {"desc":"小白花","picUrl":"20191101/eb029344-1c5c-4e5b-b8e4-9e7eb39a3549.jpg"}], 
+ picture=20191101/4a7aeec1-c6b7-4471-ba97-b92f8ec02b74.jpeg, channelId=null, channel=Channel 
+ [id=1, name=科技, description=null, icon=null], categoryId=null, 
+ category=Category [id=2, name=软件, channelId=null, channel=null], userId=null, 
+ user=User [id=48, username=e1707D, password=76922b82b1b95b3baf1213e2e279604c, nickname=null, 
+ birthday=null, gender=A, locked=0, create_time=Fri Nov 01 10:21:12 CST 2019, update_time=null, 
+ url=null, score=0, role=0], hits=0, hot=0, status=1, deleted=0, created=Fri Nov 01 10:50:47 CST 2019, 
+ updated=Fri Nov 01 10:51:06 CST 2019, commentCnt=0, articleType=1] -->
+ <c:forEach items="${info.list }" var="list">
+<div class="panel panel-success">
+   <div class="panel-heading">
+      <h3 class="panel-title">${list.title }</h3>
+   </div>
+   <div class="panel-body">
+		<a href="javaScript:showArticle(${list.id })">${list.title }</a>
+      	<br>
+      	频道:<a>${list.channel.name }</a>
+      	分类:<a>${list.category.name }</a>
+      	<br>
+      	<br>
+      	${list.user.username }发布于<fmt:formatDate value="${list.created }" pattern="yyyy-MM-dd"/>
+   </div>
+ </div>
+ 
+ 
+</c:forEach>
+<div style=" margin-left: 18px; margin-top: -10px">
+<!-- 分页左边信息展示 -->
+	<ul class="pagination">
+	  <li> <a href="javascript:goPage(${info.prePage })">&laquo;</a> </li>
+	  	<c:forEach begin="${info.pageNum - 2 > 1?info.pageNum - 2 : 1 }" end="${info.pageNum + 2 > info.pages?info.pages:info.pageNum + 2 }" varStatus="index">
+	  		<li> <a href="javascript:goPage(${index.index })">${index.index }</a> </li>
+	  	</c:forEach>
+	  <li> <a href="javascript:goPage(${info.nextPage })">&raquo;</a> </li>
+	  <li><span>当前${info.pageNum } / ${info.pages }页</span></li>
+	</ul>	
+</div>
+</div>
+	<!-- 中间结束 ----------------------------------------------------------------------------->
 	
 <div class="col-md-3">
 	<!-- 输入框 -->
@@ -302,12 +242,11 @@
 			</c:forEach>
     </div>
 </div>
-<!-- 右边下面------------------------------------------------------------------------ -->
 <div>
 	<img alt="" src="/resource/images/1707D.jpg" width="400px" height="330px">
 </div>
+
 </div>
-	
 </div>
 	
 <!-- 底部导航栏....................... -->
@@ -338,5 +277,9 @@
     </div>
     </div>
 </nav>
+	
+	
+	
+	
 </body>
 </html>

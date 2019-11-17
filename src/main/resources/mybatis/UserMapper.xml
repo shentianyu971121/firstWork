@@ -21,6 +21,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT * FROM cms_user where id = ${userId}
 	</select>
 	
+	<select id="findUserById" resultMap="userMap">
+		SELECT * FROM cms_user WHERE id=${value}
+	</select>
 	
 	
 </mapper>

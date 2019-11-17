@@ -105,7 +105,7 @@
 	}
  
  	function goPage(page) {
-		var url = "/admin/users?pageNum=" + page + "&mohu=${mohu}";
+		var url = "/admin/users?pageNum=" + page;
 		$("#content").load(url)
 	}
  	
