@@ -36,15 +36,13 @@
 			<mvc:exclude-mapping path="/article/getclist"/>
 			<mvc:exclude-mapping path="/article/addHits"/>
 			<mvc:exclude-mapping path="/pic/**"/>
-			<mvc:exclude-mapping path="/"/>
-			<mvc:exclude-mapping path="/index"/>
-			<mvc:exclude-mapping path="/user/login"/>
-			<mvc:exclude-mapping path="/user/register"/>
-			<mvc:exclude-mapping path="/user/checkExist"/>
+			<mvc:exclude-mapping path="/loginOrRegister/login"/>
+			<mvc:exclude-mapping path="/loginOrRegister/register"/>
+			<mvc:exclude-mapping path="/user/userMain"/>
 			拦截器的实现类
-			<bean class="com.mmcro.cms.web.AuthIntercepter"></bean>
+			<bean class="com.shentianyu.common.MyInterceptor"></bean>
 		</mvc:interceptor>
-	</mvc:interceptors> -->
+	</mvc:interceptors -->
 	
 	<!-- 上传下载配置 -->	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

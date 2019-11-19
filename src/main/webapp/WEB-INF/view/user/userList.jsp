@@ -45,10 +45,22 @@
 		var url = "/article/showArticle?articleId="+articleId;
 		window.open(url);
 	}
+	
+	function exit() {
+		//这就是退出信息
+		location = "/loginOrRegister/exit";
+	}
+	
+	function user() {
+		//去后台尽心查询
+		location = "/user/getArticleByUserId";
+	}
+	
+	
+	
 </script>
 </head>
 <body>
-
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
 	    <div class="navbar-header">
@@ -71,11 +83,29 @@
 	        <button type="button" class="btn btn-default navbar-btn">
 	            	导航栏按钮
 	        </button>
+	        <c:if test="${USER_SESSION_KEY == null }">
+		        <ul class="nav navbar-nav navbar-right">
+			      <li><a href="/loginOrRegister/register"><span class="glyphicon glyphicon-user"></span>注册</a></li>
+			      <li><a href="/loginOrRegister/login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+			    </ul>
+		     </c:if>
+	        <c:if test="${USER_SESSION_KEY != null }">
 	        <ul class="nav navbar-nav navbar-right">
-		      <li><a href="#"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-		      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
-		    </ul>
-		    
+			   <li class="dropdown">
+			      <a class="dropdown-toggle glyphicon glyphicon-user" data-toggle="dropdown" href="#">
+			         欢迎您:${USER_SESSION_KEY.username}<span class="caret"></span>
+			      </a>
+			      <ul class="dropdown-menu">
+			      		<!-- 点击个人中心  跳转到用另一个页面 -->
+			         <li><a href="javaScript:user()">个人中心</a></li>
+			         <li><a href="#">个人信息</a></li>
+			         <li><a href="#">设置</a></li>
+			         <li class="divider"></li>
+			         <li><a href="javaScript:exit()">退出</a></li>
+			      </ul>
+			   </li>
+			</ul>
+		     </c:if>
 	    </div>
 	</div>
 </nav>
@@ -111,7 +141,6 @@
 		</ul>
 	</div>
 	<!-- 展示图片   就是优秀毕业人 -->
-	
 	  <div >
         <div class="thumbnail" align="center">
             <img src="/resource/images/1.jpg"
@@ -130,7 +159,6 @@
         </div>
     </div>
 	</div>
-
 <!-- 中间 -->	
 <div class="col-md-7">
 		<!-- 轮播 -->
@@ -163,7 +191,6 @@
       data-slide="next">&rsaquo;</a>
      </div>	
 	<!-- 轮播 -->
-	
 	<div class="row">
 	<!-- 文章开始------------------------------------------------------------------------- -->
 	<div class="col-md-7">
@@ -202,6 +229,7 @@
 		</c:if>
 	</c:forEach>
 	</div>
+	
 		<!-- 文章列表展示结束*--------------------------------------------------------------------- -->
 		<div class="col-md-5">
 		<div style="margin-top: 10px"></div>
@@ -269,7 +297,7 @@
 <div class="col-md-3">
 	<!-- 输入框 -->
 	<div style="padding-right: 80px;">
-    <form class="bs-example bs-example-form" role="form">
+    <form class="bs-example bs-example-form" role="form" action="/loginOrRegister/login" method="post">
         <div class="input-group">
             <span class="input-group-addon">@</span>
             <input type="text" class="form-control" placeholder="请输入邮箱">
@@ -277,18 +305,18 @@
         <br>
         <div class="input-group">
         	<span class="input-group-addon">*</span>
-            <input type="text" class="form-control">
+            <input type="text" class="form-control" name="username">
             <span class="input-group-addon">账号</span>
         </div>
         <br>
         <div class="input-group">
             <span class="input-group-addon">*</span>
-            <input type="text" class="form-control">
+            <input type="text" class="form-control" name="password">
             <span class="input-group-addon">密码</span>
         </div>
+        <button type="submit" class="btn btn-success" style="margin-left: 107px; margin-top: 20px">登录</button>
+   		 <button type="submit" class="btn btn-info" style="margin-left: 30px; margin-top: 20px">注册</button>
     </form>
-    <button type="button" class="btn btn-success" style="margin-left: 107px; margin-top: 20px">登录</button>
-    <button type="button" class="btn btn-info" style="margin-left: 50px; margin-top: 20px">注册</button>
 </div>
 	<!-- 输入框 -->
 	<div class="panel panel-primary" style="width: 375px; margin-top: 10px">
@@ -297,11 +325,11 @@
     </div>
     <div class="panel-body">
         	<c:forEach items="${newArticles}" var="article" varStatus="index">
-							${index.index+1} . <a href="#">${article.title}</a>
+							${index.count} . <a href="javaScript:showArticle(${article.id })">${article.title}</a>
 							<br/>
 			</c:forEach>
     </div>
-</div>
+	</div>
 <!-- 右边下面------------------------------------------------------------------------ -->
 <div>
 	<img alt="" src="/resource/images/1707D.jpg" width="400px" height="330px">

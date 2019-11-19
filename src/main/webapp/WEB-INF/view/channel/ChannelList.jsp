@@ -54,11 +54,11 @@
 		window.open(url);
 	}
 	
-	
-	
-	
+	function exit() {
+		//这就是退出信息
+		location = "/loginOrRegister/exit";
+	}
 </script>
-
 </head>
 <body>
 
@@ -84,10 +84,28 @@
 	        <button type="button" class="btn btn-default navbar-btn">
 	            	导航栏按钮
 	        </button>
-	        <ul class="nav navbar-nav navbar-right">
-		      <li><a href="#"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-		      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
-		    </ul>
+	        <c:if test="${USER_SESSION_KEY == null }">
+		        <ul class="nav navbar-nav navbar-right">
+			      <li><a href="/loginOrRegister/register"><span class="glyphicon glyphicon-user"></span>注册</a></li>
+			      <li><a href="/loginOrRegister/login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+			    </ul>
+		     </c:if>
+	        <c:if test="${USER_SESSION_KEY != null }">
+	         <ul class="nav navbar-nav navbar-right">
+			   <li class="dropdown">
+			      <a class="dropdown-toggle glyphicon glyphicon-user" data-toggle="dropdown" href="#">
+			         欢迎您:${USER_SESSION_KEY.username}  <span class="caret"></span>
+			      </a>
+			      <ul class="dropdown-menu">
+			         <li><a href="#">个人中心</a></li>
+			         <li><a href="#">个人信息</a></li>
+			         <li><a href="#">设置</a></li>
+			         <li class="divider"></li>
+			         <li><a href="javaScript:exit()">退出</a></li>
+			      </ul>
+			   </li>
+			</ul>
+		     </c:if>
 	        
 	    </div>
 	</div>

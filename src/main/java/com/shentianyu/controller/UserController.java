@@ -3,21 +3,22 @@ package com.shentianyu.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.github.pagehelper.PageInfo;
+import com.shentianyu.common.ConstantClass;
 import com.shentianyu.entity.Article;
 import com.shentianyu.entity.Category;
 import com.shentianyu.entity.Channel;
+import com.shentianyu.entity.User;
 import com.shentianyu.service.ArticleService;
 import com.shentianyu.service.CategoryService;
 import com.shentianyu.service.ChannelService;
-import com.shentianyu.service.UserService;
 
 @Controller
 @RequestMapping(value = "user")
@@ -35,13 +36,6 @@ public class UserController {
 	@Autowired
 	private ArticleService articleService;
 	
-	
-	@RequestMapping(value = "hellow", method = RequestMethod.GET)
-	public String userTest(HttpServletRequest request) {
-		request.setAttribute("info", "Hellow");
-		return "test/interLoad";
-	}
-	
 	@RequestMapping("userMain")
 	public String userMain(HttpServletRequest request,
 			@RequestParam(defaultValue = "1")int pageNum) {
@@ -55,7 +49,6 @@ public class UserController {
 		List<Article> newArticles = articleService.getNewArticles(5);
 		request.setAttribute("hotList", hotList);
 		request.setAttribute("newArticles", newArticles);
-		
 		return "user/userList";
 	}
 	
@@ -77,9 +70,6 @@ public class UserController {
 		//然后获取article 的所有列表信
 		PageInfo<Article> info = articleService.getListByCat(chnId, categoryId, pageNum);
 		List<Article> list2 = info.getList();
-		for (Article article : list2) {
-			System.out.println(article + ".........................................................");
-		}
 		
 		//然后将所有信息返回到前台页面
 		request.setAttribute("categoryList", categoryList);
@@ -91,8 +81,33 @@ public class UserController {
 
 		return "channel/ChannelList";
 	}
-	
 
+	//getArticleByUserId  通过session里面的对象  直接去数据库里面查询article里面的userId
+	@RequestMapping("getArticleByUserId")
+	public String getArticleByUserId(HttpServletRequest request) {
+		//然后返回指定的页面
+		return "user/myList";
+	}
+	
+	
+	
+	//myArticle查询我的文章
+	@RequestMapping("myArticle")
+	public String getMyArticle(HttpServletRequest request, @RequestParam(defaultValue = "1")int pageNum) {
+		//首先去session对象里面取出user对象
+		HttpSession ss = request.getSession();
+		User user = (User) ss.getAttribute(ConstantClass.USER_SESSION_KEY);
+		System.out.println(user.getId() +  " +++++++++++++++++++++++++++0" + user);
+		//然后通过userid查询article 里面的文章
+		PageInfo<Article> info = articleService.getArticleByUserIs(user.getId(), pageNum);
+		request.setAttribute("info", info);
+		List<Article> list = info.getList();
+		for (Article article : list) {
+			System.out.println(article);
+		}
+		return "article/myArticle";
+	}
+	
 	
 }
 

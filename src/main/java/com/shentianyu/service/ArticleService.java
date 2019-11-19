@@ -23,7 +23,7 @@ public interface ArticleService {
 	 * @Description: 查询新的文章
 	 * @param i
 	 * @return
-	 * @return: List<Article>
+	 * @return: List<Article>List<Article> newArticles
 	 */
 	List<Article> getNewArticles(int i);
 	
@@ -47,5 +47,23 @@ public interface ArticleService {
 	 * @return: Article
 	 */
 	Article getArticleById(int articleId);
+	/**
+	 * 
+	 * @Title: getArticleByUserIs 
+	 * @Description:通过userId查询出文章
+	 * @param id
+	 * @param pageNum
+	 * @return
+	 * @return: PageInfo<Article>
+	 */
+	PageInfo<Article> getArticleByUserIs(Integer id, int pageNum);
+	/**
+	 * 
+	 * @Title: getAllArticleByAdmin 
+	 * @Description: 查询所有的列表信息  就是管理员可以看到
+	 * @return
+	 * @return: PageInfo<Article>
+	 */
+	PageInfo<Article> getAllArticleByAdmin(int pageNum);
 
 }

@@ -43,7 +43,6 @@ public class AdminController {
 	@ResponseBody
 	@RequestMapping("updateStatus")
 	public Object lockUpdate(int userId, int status) {
-		
 		if(status != 1 && status != 0) {
 			return new MsgResult(2, "参数无效", null);
 		}
@@ -52,7 +51,6 @@ public class AdminController {
 		if(user == null) {
 			return new MsgResult(2, "该用户不存在", null);
 		}
-		
 		if(user.getLocked() == status) {
 			return new MsgResult(2, "无需做此操作", null);
 		}

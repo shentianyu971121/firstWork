@@ -13,12 +13,12 @@
  <script type="text/javascript" src="/resource/js/jquery-3.2.1.js"></script> 
  <!-- 引入bootstrap的js -->
  <script type="text/javascript" src="/resource/bootstrap/js/bootstrap.js"></script>
-<title>Insert title here</title>
+<title>我的文章列表</title>
+<!-- 这个是个人 中心点击 点击我的文章嵌入的界面  -->
 </head>
 <body>
-<!-- 这个界面是管理员 点击我的文章展示的页面    -->
 <table class="table table-condensed">
-   <caption>所有文章</caption>
+   <caption>我的文章</caption>
    <thead>
       <tr>
          <th>标题</th>
@@ -54,18 +54,19 @@
    		<tr>
       		<td colspan="10">
 			共${info.total }条数据,当前${info.pageNum } / ${info.pages }页
-			<a href="javaScript:goPage('/article/allArticle?pageNum=1')">首页</a>
-			<a href="javaScript:goPage('/article/allArticle?pageNum=${info.prePage }')">上一页</a>
-			<a href="javaScript:goPage('/article/allArticle?pageNum=${info.nextPage }')">下一页</a>
-			<a href="javaScript:goPage('/article/allArticle?pageNum=${info.pages }')">尾页</a>
+			<a href="javaScript:goPage('/user/myArticle?pageNum=1')">首页</a>
+			<a href="javaScript:goPage('/user/myArticle?pageNum=${info.prePage }')">上一页</a>
+			<a href="javaScript:goPage('/user/myArticle?pageNum=${info.nextPage }')">下一页</a>
+			<a href="javaScript:goPage('/user/myArticle?pageNum=${info.pages }')">尾页</a>
       		</td>
       	</tr>
    </tbody>
    </table>
    <script type="text/javascript">
-  	function goPage(url) {
-	   $("#content").load(url);
+   function goPage(url) {
+	   $("#contant").load(url);
 	}
    </script>
+   
 </body>
 </html>

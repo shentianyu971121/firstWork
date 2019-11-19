@@ -41,4 +41,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select * from cms_article where id = ${articleId} and deleted = 0 and status =  1
 	</select>
 	
+	<!-- 通过制定userID查询出来对象  并且未被 逻辑删除 审核通过的 -->
+	<select id="getArticleByUserId" resultMap="articleMap">
+		SELECT id,title,content,picture,channel_id,category_id,user_id,hits,hot,status,
+			deleted,created FROM cms_article 
+			 where deleted = 0 and user_id = ${userId} ORDER BY created DESC
+	</select>
+	<!-- 查询所有的信息   -->
+	<select id="getAllArticleByAdmin" resultMap="articleMap">
+		SELECT id,title,content,channel_id,category_id,user_id,hits,hot,status,
+			deleted,created FROM cms_article 
+			 where deleted = 0 ORDER BY created DESC
+	</select>
 </mapper>

@@ -45,5 +45,25 @@ public class ArticleServiceImpl implements ArticleService {
 		// TODO Auto-generated method stub
 		return articleMapper.getArticliById(articleId);
 	}
+	/**
+	 * 通过userid查询出来文章列表
+	 */
+	@Override
+	public PageInfo<Article> getArticleByUserIs(Integer id, int pageNum) {
+		// TODO Auto-generated method stub
+		PageHelper.startPage(pageNum, 5);
+		//然后去mapper层进行查询
+		List<Article> list = articleMapper.getArticleByUserId(id);
+		return new PageInfo<Article>(list);
+	}
+	//查询所有的文章
+	@Override
+	public PageInfo<Article> getAllArticleByAdmin(int pageNum) {
+		//首先进行分页
+		PageHelper.startPage(pageNum, 5);
+		//然后进行查询所有的信息
+		List<Article> list = articleMapper.getAllArticleByAdmin();
+		return new PageInfo<Article>(list);
+	}
 
 }

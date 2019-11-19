@@ -50,5 +50,22 @@ public interface ArticleMapper {
 	 * @return: Article
 	 */
 	Article getArticliById(@Param("articleId")int articleId);
+	/**
+	 * 
+	 * @Title: getArticleByUserId 
+	 * @Description: 通过UserID查询出来文章列表
+	 * @param id
+	 * @return
+	 * @return: List<Article>
+	 */
+	List<Article> getArticleByUserId(@Param("userId")Integer id);
+	/**
+	 * 
+	 * @Title: getAllArticleByAdmin 
+	 * @Description: 查询所有的信息
+	 * @return
+	 * @return: List<Article>
+	 */
+	List<Article> getAllArticleByAdmin();
 
 }
