@@ -58,6 +58,25 @@
 		//这就是退出信息
 		location = "/loginOrRegister/exit";
 	}
+	
+	
+	//给频道一个指定的点击事件
+	$(function() {
+		$(".list-group a li").click(function() {
+			var url = $(this).attr("data");
+			//因为这是一个地址 所有我们直接去后台访问
+			location = url;
+		})
+	})
+	
+	/*  */
+	function user() {
+		//去后台尽心查询
+		location = "/user/getArticleByUserId";
+	}
+	
+	
+	
 </script>
 </head>
 <body>
@@ -97,7 +116,7 @@
 			         欢迎您:${USER_SESSION_KEY.username}  <span class="caret"></span>
 			      </a>
 			      <ul class="dropdown-menu">
-			         <li><a href="#">个人中心</a></li>
+			         <li><a href="javaScript:user()">个人中心</a></li>
 			         <li><a href="#">个人信息</a></li>
 			         <li><a href="#">设置</a></li>
 			         <li class="divider"></li>

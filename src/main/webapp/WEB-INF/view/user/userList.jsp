@@ -34,29 +34,23 @@
 			location = url;
 		})
 	})
-	
 	function goPage(page) {
 		var url = "/user/userMain?pageNum=" + page;
 		location = url;
 	}
-	
 	function showArticle(articleId) {
 		//然后去查询一下详情内容
 		var url = "/article/showArticle?articleId="+articleId;
 		window.open(url);
 	}
-	
 	function exit() {
 		//这就是退出信息
 		location = "/loginOrRegister/exit";
 	}
-	
 	function user() {
 		//去后台尽心查询
 		location = "/user/getArticleByUserId";
 	}
-	
-	
 	
 </script>
 </head>
@@ -193,7 +187,7 @@
 	<!-- 轮播 -->
 	<div class="row">
 	<!-- 文章开始------------------------------------------------------------------------- -->
-	<div class="col-md-7">
+	<div class="col-md-7" style="heheoverflow-x:scroll;overflow-y:scroll; height: 430px">
 	<c:forEach items="${hotList.list }" var="list" varStatus="index">
 	<!-- 左边信息展示 -->
 			<div class="bg-light text-dark" style=" margin-left: 18px; margin-top: 5px">

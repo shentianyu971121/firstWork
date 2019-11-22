@@ -16,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getHotList" resultMap="articleMap">
 			SELECT id,title,picture,channel_id,category_id,user_id,hits,commentCnt,created
 			FROM cms_article 
-			WHERE deleted=0 AND status=1 AND hot=1
+			WHERE deleted=0 AND status=1 AND hot=1 order by created desc
 	</select>
 	<!-- 展示最新的信息 -->
 	<select id="getNewArticles" resultType="com.shentianyu.entity.Article">
@@ -24,6 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE deleted=0 AND status=1 
 		ORDER BY created DESC  limit ${value}
 	</select>
+	
 	<!--根据频道ID或者分类 ID 查询 出内容  -->
 	<select id="getListByCat" resultMap="articleMap">
 		select id,title,content,picture,channel_id,category_id,
@@ -52,5 +53,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT id,title,content,channel_id,category_id,user_id,hits,hot,status,
 			deleted,created FROM cms_article 
 			 where deleted = 0 ORDER BY created DESC
+	</select>
+	<!-- 查询未审核的信息   -->
+	<select id="getArticleByStatus" resultMap="articleMap">
+		SELECT id,title,content,channel_id,category_id,user_id,hits,hot,status,
+			deleted,created FROM cms_article 
+			 where deleted = 0 and status = 0 and  user_id = ${value} ORDER BY created DESC
+	</select>
+	<!-- 查询已经删除的信息   -->
+	<select id="getArticleByDelete" resultMap="articleMap">
+		SELECT id,title,content,channel_id,category_id,user_id,hits,hot,status,
+			deleted,created FROM cms_article 
+			 where deleted = 1 and  user_id = ${value}  ORDER BY created DESC
+	</select>
+	<!-- 通过ID查询信息管理员审核时查看    -->
+	<select id="showArticleById" resultMap="articleMap">
+		select * from cms_article where id = ${value} and deleted = 0
+	</select>
+	
+	<!-- 通过ID查询信息是否已经存在    -->
+	<select id="getArticleByIdToDeleteByUser" resultMap="articleMap">
+		select * from cms_article where id = ${value}
 	</select>
 </mapper>

@@ -65,5 +65,105 @@ public interface ArticleService {
 	 * @return: PageInfo<Article>
 	 */
 	PageInfo<Article> getAllArticleByAdmin(int pageNum);
+	/**
+	 * 
+	 * @Title: getArticleByStatus 
+	 * @Description: 查询未审核的文章
+	 * @param id
+	 * @return
+	 * @return: List<Article>
+	 */
+	List<Article> getArticleByStatus(Integer id);
+	/**
+	 * 
+	 * @Title: getArticleByDelete 
+	 * @Description: 查询已经删除的文章
+	 * @param id
+	 * @return
+	 * @return: List<Article>
+	 */
+	List<Article> getArticleByDelete(Integer id);
+	/**
+	 * 
+	 * @Title: articleDel 
+	 * @Description: 删除信息 也就是修改
+	 * @param id
+	 * @return
+	 * @return: int
+	 */
+	int articleDel(Integer id);
+	/**
+	 * 
+	 * @Title: showArticleById 
+	 * @Description: 通过ID查询出来信息
+	 * @param id
+	 * @return
+	 * @return: Article
+	 */
+	Article showArticleById(Integer id);
+	/**
+	 * 
+	 * @Title: adminUpdateStatus 
+	 * @Description: 审核信息
+	 * @param id
+	 * @param status
+	 * @return
+	 * @return: int
+	 */
+	int adminUpdateStatus(Integer id, Integer status);
+	/**
+	 * 
+	 * @Title: adminUpdateHot 
+	 * @Description:修改热门与非热门
+	 * @param id
+	 * @param hot
+	 * @return
+	 * @return: int
+	 */
+	int adminUpdateHot(Integer id, Integer hot);
+	/**
+	 * 
+	 * @Title: add 
+	 * @Description: 发布文章
+	 * @param article
+	 * @return
+	 * @return: int
+	 */
+	int add(Article article);
+	/**
+	 * 
+	 * @Title: getArticleByIdToDeleteByUser 
+	 * @Description: 首先查询Id是否存在   然后进行删除
+	 * @param id
+	 * @return
+	 * @return: Article
+	 */
+	Article getArticleByIdToDeleteByUser(Integer id);
+	/**
+	 * 
+	 * @Title: userUpdateDelete 
+	 * @Description: 逻辑删除  也就是i修改deleted的状态
+	 * @param id
+	 * @return
+	 * @return: int
+	 */
+	int userUpdateDelete(Integer id);
+	/**
+	 * 
+	 * @Title: update 
+	 * @Description: 修改我的文章
+	 * @param article
+	 * @return
+	 * @return: int
+	 */
+	int update(Article article);
+	/**
+	 * 
+	 * @Title: getMaxId 
+	 * @Description: 查询Id的最大值
+	 * @return
+	 * @return: int
+	 */
+	int getMaxId();
 
 }

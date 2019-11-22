@@ -14,7 +14,7 @@
  <!-- 引入bootstrap的js -->
  <script type="text/javascript" src="/resource/bootstrap/js/bootstrap.js"></script>
 <title>我的文章列表</title>
-<!-- 这个是个人 中心点击 点击我的文章嵌入的界面   全部的界面-->
+<!-- 这个是个人 中心点击 点击我的文章嵌入的界面   这个是未审核的界面       -->
 </head>
 <body>
 <table class="table table-condensed">
@@ -30,7 +30,7 @@
       </tr>
    </thead>
    <tbody>
-   	<c:forEach items="${info.list }" var="list">
+   	<c:forEach items="${list }" var="list">
       <tr>
          <td><a href="javaScript:showArticle(${list.id })">${list.title }</a></td>
          <td>${list.channel.name }</td>
@@ -44,52 +44,33 @@
          </c:choose>
          </td>
          <td>
-         	<input type="button" onclick="modifyArticle(${list.id})" value="修改">
-         	<input type="button" value="删除" onclick="deleteArticle(${list.id}, ${list.user.id })">
+         	<input type="button" value="修改">
+         	<input type="button" value="删除" onclick="delArticleByUser(${list.id })">
          </td>
       </tr>
       </c:forEach>
    </tbody>
-   <tbody>
-   		<tr>
-      		<td colspan="10">
-			共${info.total }条数据,当前${info.pageNum } / ${info.pages }页
-			<a href="javaScript:goPage('/user/myArticle?pageNum=1')">首页</a>
-			<a href="javaScript:goPage('/user/myArticle?pageNum=${info.prePage }')">上一页</a>
-			<a href="javaScript:goPage('/user/myArticle?pageNum=${info.nextPage }')">下一页</a>
-			<a href="javaScript:goPage('/user/myArticle?pageNum=${info.pages }')">尾页</a>
-      		</td>
-      	</tr>
-   </tbody>
    </table>
    <script type="text/javascript">
-   function goPage(url) {
-	   $("#contant").load(url);
+	function showArticle(id) {
+		 //然后去查询一下详情内容
+			var url = "/article/showArticle?articleId="+id;
+			window.open(url);
 	}
-   function showArticle(id) {
-	 //然后去查询一下详情内容
-		var url = "/article/showArticle?articleId="+id;
-		window.open(url);
-	}
-   function deleteArticle(articleId, userId) {
-	   $.post(
-		"/user/delArticleByUser",
-		{articleId:articleId,userId:userId},
+	//去后台进行删除
+	function delArticleByUser(id) {
+		$.post(
+		"user/delArticleByUser",		
+		{id:id},
 		function(obj) {
 			if(obj.result == 1) {
 				alert("删除成功")
-				$("#contant").load("/user/myArticle?pageNum=${info.pageNum}");
 			} else {
 				alert(obj.errorMsg)
 			}
 		},
 		"json"
-	   )
-   }
-   //修改信息
-   function modifyArticle(articleId){
-		var url="/user/updateArticle?id="+articleId;
-		$("#contant").load(url);
+		)
 	}
    
    </script>

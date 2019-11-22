@@ -8,10 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
+import com.shentianyu.common.MsgResult;
+import com.shentianyu.common.MyAssert;
 import com.shentianyu.entity.Article;
+import com.shentianyu.entity.Category;
 import com.shentianyu.service.ArticleService;
+import com.shentianyu.service.CategoryService;
 
 @Controller
 @RequestMapping("article")
@@ -20,10 +25,54 @@ public class ArticleController {
 	@Autowired
 	private ArticleService articleService;
 	
+	@Autowired
+	private CategoryService categoryService;
+	
+	/**
+	 * 设置上一篇 下一篇
+	 */
+	@RequestMapping("nextArticle")
+	public String nextArticle(Integer id,  HttpServletRequest request) {
+		Article article = null;
+		int result = articleService.getMaxId();
+		System.out.println("最大值为 ++++++" + result);
+		//首先根据id查询比这个id小的值
+		for (int i = id + 1 ; i <= result; i++ ) {
+			//去后台对象是否有值  如果有值 就将循环停止
+			article = articleService.getArticleById(i);
+			System.out.println("article相邻的最近的是:" + article);
+			if(article != null) {
+				i = result--;
+				break;
+			}
+		}
+		//那么这个就是相邻的上一篇额id  然后调用方法
+		request.setAttribute("article", article);
+		return "article/showHotArticle";
+	}
+	/**
+	 * 设置上一篇 下一篇
+	 */
+	@RequestMapping("preArticle")
+	public String preOrNextArticle(Integer id,  HttpServletRequest request) {
+		Article article = null;
+		//首先根据id查询比这个id小的值
+		for (int i = id - 1; i > 0; i--) {
+			//去后台对象是否有值  如果有值 就将循环停止
+			article = articleService.getArticleById(i);
+			System.out.println("article相邻的最近的是:" + article);
+			if(article != null) {
+				break;
+			}
+		}
+		//那么这个就是相邻的上一篇额id  然后调用方法
+		request.setAttribute("article", article);
+		return "article/showHotArticle";
+	}
 	/**
 	 * 
 	 * @Title: showArticle 
-	 * @Description: 测试
+	 * @Description: 点击文章之后的文章展示
 	 * @param articleId
 	 * @param request
 	 * @return
@@ -33,9 +82,11 @@ public class ArticleController {
 	public String showArticle(int articleId, HttpServletRequest request) {
 		//去后台查询
 		Article article = articleService.getArticleById(articleId);
+		System.out.println(article);
 		request.setAttribute("article", article);
-		return "article/showArticle";
+		return "article/showHotArticle";
 	}
+	
 	
 	/**
 	 * 
@@ -55,6 +106,88 @@ public class ArticleController {
 		request.setAttribute("info", info);
 		return "article/showArticle";
 	}
+	/**
+	 * 
+	 * @Title: allArticle 
+	 * @Description: 删除  就是修改deleted的值为1
+	 * @param request
+	 * @param pageNum
+	 * @return
+	 * @return: String
+	 */
+	@RequestMapping("articleDel")   //删除操作
+	@ResponseBody
+	public Object articleDel(HttpServletRequest request, Integer id) {
+		//首先判断id的值是否大于0
+		MyAssert.AssertTrue(id>0, "输入的id有误");
+		//然后查询id是否有值
+		Article article = articleService.getArticleById(id);
+		//然后进行删除
+		int result = articleService.articleDel(id);
+		if(result > 0) {
+			return new MsgResult(1, "删除成功", null);
+		}
+		return new MsgResult(2, "删除失败", null);
+	}
 	
+	@RequestMapping("showArticleById")   //删除操作
+	@ResponseBody
+	public Object showArticleById(HttpServletRequest request, Integer id) {
+		//首先判断id的值是否大于0
+		MyAssert.AssertTrue(id>0, "输入的id有误");
+		//然后查询id是否有值
+		Article article = articleService.showArticleById(id);
+		System.out.println("article +++++++++++++++++++++++ " + article);
+		MyAssert.AssertTrue(article != null, "对不起没有查询出来值");
+		//然后进行回显
+		return new MsgResult(1, null, article);
+	}
+	
+	@RequestMapping("adminUpdateStatus")   //审核通过和不通过
+	@ResponseBody
+	public Object adminUpdateStatus(HttpServletRequest request, Integer id, Integer status) {
+		//首先判断id的值是否大于0
+		MyAssert.AssertTrue(id>0, "输入的id有误");
+		//然后查询id是否有值
+		Article article = articleService.showArticleById(id);
+		//判断输入的id值是否为空
+		MyAssert.AssertTrue(article != null, "对不起没有查询出来值");
+		//然后进行修改
+		int result = articleService.adminUpdateStatus(id,status);
+		MyAssert.AssertTrue(result > 0, "修改失败");
+		//然后进行回显
+		return new MsgResult(1, "修改成功", null);
+	}
+	
+	
+	@RequestMapping("adminUpdateHot")   //设置为热门和非热门
+	@ResponseBody
+	public Object adminUpdateHot(HttpServletRequest request, Integer id, Integer hot) {
+		System.out.println(" + ++ ++ ++ ++ + + + +++"+  id);
+		//首先判断id的值是否大于0
+		MyAssert.AssertTrue(id>0, "输入的id有误");
+		//然后查询id是否有值
+		Article article = articleService.showArticleById(id);
+		//判断输入的id值是否为空
+		MyAssert.AssertTrue(article != null, "对不起没有查询出来值");
+		//然后进行修改
+		int result = articleService.adminUpdateHot(id,hot);
+		MyAssert.AssertTrue(result > 0, "修改失败");
+		//然后进行回显
+		return new MsgResult(1, "修改成功", null);
+	}
+	
+	@RequestMapping("getCategoryByChannel")   //通过频道Id查询出来分类信息
+	@ResponseBody
+	public Object getCategoryByChannel(Integer chnId) {
+		System.out.println("进入了 Article方法  + " + chnId);
+		//首先判断id的值是否大于0
+		/* MyAssert.AssertTrue(chnId>0, "输入的id有误"); */
+		//然后频道Id查询出来值
+		List<Category> categories =  categoryService.getCategoryList(chnId);
+		System.out.println();
+		//然后进行回显
+		return new MsgResult(1, null, categories);
+	}
 	
 }

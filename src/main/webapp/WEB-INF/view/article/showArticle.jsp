@@ -17,6 +17,37 @@
 </head>
 <body>
 <!-- 这个界面是管理员 点击我的文章展示的页面    -->
+
+   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
+   aria-labelledby="myModalLabel" aria-hidden="true"   >
+   <div class="modal-dialog">
+      <div class="modal-content" >
+         <div class="modal-header">
+            <button type="button" class="close" 
+               data-dismiss="modal" aria-hidden="true">
+                  &times;            </button>
+            <h4 class="modal-title" id="myModalLabel">
+            	<!--这里面写标题 -->
+             </h4>
+            <h5 class="modal-title" id="author">
+            	<!--这里面写标题 -->
+             </h5>
+            <h5 class="modal-title" id="channel">
+            	<!--这里面写标题 -->
+             </h5>
+         </div>
+         <div class="modal-body" id="content1111" style="height:500px;overflow-x:scroll;overflow-y:scroll"> 
+         </div>
+      </div><!-- /.modal-content -->
+       <div class="modal-footer">
+         <input type="button" class="btn btn-default btn-success" onclick="apply(1)" data-dismiss="modal" value="审核通过" >
+         <input type="button" class="btn btn-default btn-warning" onclick="apply(2)" data-dismiss="modal" value="审核不通过">
+         <input type="button" class="btn btn-default btn-danger" onclick="setHot(1)" data-dismiss="modal" value="热门">
+         <input type="button" class="btn btn-default btn-warning" onclick="setHot(0)" data-dismiss="modal" value="非热门">
+         </div>
+      </div>
+      <!-- /.modal -->
+      </div>
 <table class="table table-condensed">
    <caption>所有文章</caption>
    <thead>
@@ -25,7 +56,9 @@
          <th>频道</th>
          <th>分类</th>
          <th>发布日期</th>
-         <th>状态</th>
+         <th>状态
+         	<input type="hidden" name="articleId">
+         </th>
          <th>操作</th>
       </tr>
    </thead>
@@ -44,8 +77,8 @@
          </c:choose>
          </td>
          <td>
-         	<input type="button" value="修改">
-         	<input type="button" value="删除">
+         	<input type="button"  class=" btn btn-warning btn-primary" data-toggle="modal" data-target="#myModal" onclick="showArticle(${list.id })"  value="审核">
+         	<input type="button" class= "btn btn-danger" value="删除"   onclick="articleDel(${list.id })">   <!-- 删除 -->
          </td>
       </tr>
       </c:forEach>
@@ -66,6 +99,82 @@
   	function goPage(url) {
 	   $("#content").load(url);
 	}
+  	//删除  就是修改  将deleted的值修改为1
+  	function articleDel(id) {
+		$.post(
+		"/article/articleDel",	
+		{id:id},
+		function(obj) {
+			if(obj.result == 1) {
+				alert("删除成功")
+				$("#content").load('/article/allArticle')	
+			} else if(obj.result == 2) {
+				alert("删除失败")
+			} else {
+				alert(obj.errorMsg)
+			}
+		},
+		"json"
+		)
+	}
+  	/* 点击审核时候需要回显信息  也就是使用ajax回显 */
+  	function showArticle(id) {
+		//去后台展示信息
+		$.post(
+		"/article/showArticleById",		
+		{id:id},
+		function(obj) {
+			if(obj.result == 1) {
+				$("[name=articleId]").val(obj.data.id)
+				 $("#myModalLabel").text(obj.data.title)		
+				 $("#author").text("作者 : " + obj.data.user.username)		
+				 $("#channel").text("频道 : " + obj.data.channel.name +  "  分类:" + obj.data.category.name)		
+				 $("#content1111").html(obj.data.content)	
+			} else {
+				alert(obj.errorMsg)
+			}
+				
+		}, 
+		"json"
+		)
+	}
+  	
+  	function apply(status) {
+  		var id = $("[name=articleId]").val()
+  		//首先获取Id的值   然年去后进行修改
+  		$.post(
+  		"/article/adminUpdateStatus",
+  		{id:id,status:status},
+  		function(obj) {
+			if(obj.result == 1) {
+				alert("审核成功")
+				$("#content").load('/article/allArticle?pageNum=${info.pageNum }')
+			} else {
+				alert(obj.errorMsg)
+			}
+		},
+		"json"
+  		)
+	}
+  	//设置热门 信息
+  	function setHot(hot) {
+  		var id = $("[name=articleId]").val()
+  		$.post(
+  		"/article/adminUpdateHot",
+  		{id:id,hot:hot},
+  		function(obj) {
+			if(obj.result == 1) {
+				alert("审核成功")
+				$("#content").load('/article/allArticle?pageNum=${info.pageNum }')
+			} else {
+				alert(obj.errorMsg)
+			}
+		},
+		"json"
+  		)
+	}
+  	
+  	
    </script>
 </body>
 </html>

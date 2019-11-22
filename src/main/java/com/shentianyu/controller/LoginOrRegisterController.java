@@ -94,6 +94,7 @@ public class LoginOrRegisterController {
 	 */
 	@RequestMapping(value = "register", method = RequestMethod.POST)
 	public String register(HttpServletRequest request, User user) {
+		System.out.println("注册信息的方法");
 		//这个就是直接 进入注册方法
 		int result = loginOrRegisterService.register(user);
 		System.out.println(result);
@@ -132,7 +133,6 @@ public class LoginOrRegisterController {
 		//退出登录  就是清楚session缓存 让后调往主界面
 		HttpSession ss = request.getSession();
 		ss.removeAttribute(ConstantClass.USER_SESSION_KEY);
-		return "redirect:/user/userMain";
+		return "redirect:/loginOrRegister/login";
 	}
-	
 }

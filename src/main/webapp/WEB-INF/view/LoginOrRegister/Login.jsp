@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-
 <title>欢迎登陆</title>
  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,6 +21,11 @@
 <div class="container" style=" background-color:#6fc87e; vertical-align: middle;" align="center">
 <div style="boder:1px #ccc solid; width:400px;height:400px;">
 <form class="form-horizontal" id="regForm" role="form" method="post">
+	<div style="font-size: 36px; margin-top: 20px">
+	<c:if test="${USER_SESSION_KEY == null }">
+		${error }
+	</c:if>
+	</div>
 	  <div class="form-group" style="margin-top: 100px">
 	    <label for="firstname" class="col-sm-3 control-label">用户名:</label>
 	    <div class="col-sm-9">
@@ -43,6 +48,7 @@
 	</form>
 </div>
 </div>
+
 <script type="text/javascript">
 	function login() {
 		$("#regForm").submit();

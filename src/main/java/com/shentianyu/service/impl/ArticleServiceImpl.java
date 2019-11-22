@@ -65,5 +65,75 @@ public class ArticleServiceImpl implements ArticleService {
 		List<Article> list = articleMapper.getAllArticleByAdmin();
 		return new PageInfo<Article>(list);
 	}
+	//查询未审核的文章
+	@Override
+	public List<Article> getArticleByStatus(Integer id) {
+		
+		return articleMapper.getArticleByStatus(id);
+	}
+	//查询已经删除的文章
+	@Override
+	public List<Article> getArticleByDelete(Integer id) {
+		// TODO Auto-generated method stub
+		return articleMapper.getArticleByDelete(id);
+	}
+	/**
+	 * 删除信息  也就是修改  信息
+	 */
+	@Override
+	public int articleDel(Integer id) {
+		//
+		return articleMapper.articleDel(id);
+	}
+	/**
+	 * 通过ID查询出来信息并且回显
+	 */
+	@Override
+	public Article showArticleById(Integer id) {
+		// TODO Auto-generated method stub
+		return articleMapper.showArticleById(id);
+	}
+	//通过Id修改审核通过或不通过
+	@Override
+	public int adminUpdateStatus(Integer id, Integer status) {
+		// TODO Auto-generated method stub
+		return articleMapper.adminUpdateStatus(id, status);
+	}
+	//通过ID修改是否 为热门
+	@Override
+	public int adminUpdateHot(Integer id, Integer hot) {
+		// TODO Auto-generated method stub
+		return articleMapper.adminUpdateHot(id,hot);
+	}
+	//发布文章
+	@Override
+	public int add(Article article) {
+		// TODO Auto-generated method stub
+		return articleMapper.add(article);
+	}
+	//查询ID是否 存在 然后进行删除
+	@Override
+	public Article getArticleByIdToDeleteByUser(Integer id) {
+		// TODO Auto-generated method stub
+		return articleMapper.getArticleByIdToDeleteByUser(id);
+	}
+	//逻辑删除 也就是修改deleted的信息
+	@Override
+	public int userUpdateDelete(Integer id) {
+		// TODO Auto-generated method stub
+		return articleMapper.userUpdateDelete(id);
+	}
+	//修改文章
+	@Override
+	public int update(Article article) {
+		// TODO Auto-generated method stub
+		return articleMapper.update(article);
+	}
+	//查询Id的最大值
+	@Override
+	public int getMaxId() {
+		// TODO Auto-generated method stub
+		return articleMapper.getMaxId();
+	}
 
 }
