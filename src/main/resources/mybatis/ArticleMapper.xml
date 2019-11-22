@@ -6,6 +6,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 因为文章里面有各种累 频道 分类 被 user类 -->
 	<resultMap type="com.shentianyu.entity.Article" id="articleMap">
 		<id column="id" property="id"/>
+		<!-- 设置映射文件的enum -->
+		<result column="articleType" property="articleType" javaType="com.shentianyu.entity.TypeEnum" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
 		<!-- 然后就是文章类里面的三个属性 设置频道   然后直接调用其他接口里面的查询方法进行查询 -->
 		<association property="channel" column="channel_id" select="com.shentianyu.dao.ChannelMapper.findById"  />
 		<association property="user" column="user_id" select="com.shentianyu.dao.UserMapper.findUserById"  />
@@ -75,4 +77,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getArticleByIdToDeleteByUser" resultMap="articleMap">
 		select * from cms_article where id = ${value}
 	</select>
+	
+	<!-- 获取最新的文章图片 -->
+	<select id="getImgArticles" resultMap="articleMap" >
+		SELECT id,title,picture,channel_id,category_id,user_id,hits,commentCnt,created,articleType
+			FROM cms_article 
+			WHERE deleted=0 AND status=1 AND articleType=1
+			ORDER BY created DESC 
+			LIMIT #{value}
+	</select>
+	
 </mapper>

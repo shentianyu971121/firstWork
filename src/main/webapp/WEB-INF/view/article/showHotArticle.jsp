@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,17 +16,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<!-- Article 
-[id=115, title=实打实大苏打, content=<img src="/pic/image/20191101/20191101104037_677.jpeg" alt="" />, 
-picture=20191101/adf360da-6280-41bd-99af-b300ade0d7af.jpg, channelId=null, 
-channel=Channel [id=3, name=国际, description=null, icon=null], categoryId=null, 
-category=Category [id=11, name=欧洲, channelId=null, channel=null], userId=null, 
-user=User [id=48, username=e1707D, password=76922b82b1b95b3baf1213e2e279604c, 
-nickname=null, birthday=null, gender=A, locked=0, create_time=Fri Nov 01 10:21:12 CST 2019, 
-update_time=null, url=null, score=0, role=0], hits=0, hot=1, status=1, deleted=0, 
-created=Fri Nov 01 10:40:53 CST 2019, updated=Fri Nov 01 10:40:53 CST 2019, commentCnt=0, 
-articleType=0]
- --><!-- 展示点击热门文章后的展示页面 -->
+<!-- 展示点击热门文章后的展示页面 -->
  <div class="container">
 <div class="panel panel-success">
     <div class="panel-heading">
@@ -34,16 +25,69 @@ articleType=0]
         <h4 class="panel-title">发布时间 :<fmt:formatDate value="${article.created }" pattern="yyyy-MM-dd"/></h4>
     </div>
     <div class="panel-body">
+    	<input type="hidden" name="userId" value="${article.user.id }">
+    	<input type="hidden" name="articleId" value="${article.id }">
         	${article.content }
     </div>
-    
 </div>
 	<div style="text-align: center">
         	<input type="button" style="margin-right: 50px"  value="上一篇" class="btn btn-warning" onclick="preArticle(${article.id})" >
         	<input type="button" value="下一篇" class="btn btn-warning" onclick="nextArticle(${article.id})">
+        	<input type="button" data-toggle="modal" data-target="#myModal" value="我要评论" class="btn btn-primary btn-lg btn-waring" style="margin-left: 72px" onclick="">
     </div>
 </div>
+
+<div class="container" id="content" >
+	
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">${article.title }</h4>
+                <h6 class="modal-title" id="myModalLabel"><span style="color: skyblue; font-size: 24px">${article.user.username } </span>&nbsp;你好  请发布你的评论</h6>
+            </div>
+            <div class="modal-body">
+            	<textarea rows="10" cols="70" name="content">
+            	
+            	</textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">我在想想</button>
+                <button type="button" class="btn btn-primary" onclick="upSpeak()">提交评论</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
 <script type="text/javascript">
+$(function() {
+	$("#content").load("/articleContent/hotSpeak?articleId=${article.id }")
+})
+
+//发布评论
+function upSpeak() {
+	var content = $("[name=content]").val()
+	var userId = $("[name=userId]").val()
+	var articleId = $("[name=articleId]").val()
+	$.post(
+		"/articleContent/upSpeak",	
+		{content:content, userId:userId, articleId:articleId},
+		function(obj) {
+			if(obj.result == 1) {
+				alert("评论成功")
+				location = "/article/showArticle?articleId="+articleId;
+			} else {
+				alert(obj.errorMsg)
+			}
+		},
+		"json"
+	)
+}
+
 function preArticle(id) {
 	location = "/article/preArticle?id="+id;
 }

@@ -7,16 +7,24 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.PageInfo;
+import com.shentianyu.common.ConstantClass;
 import com.shentianyu.common.MsgResult;
 import com.shentianyu.common.MyAssert;
 import com.shentianyu.entity.Article;
+import com.shentianyu.entity.ArticleSpeak;
 import com.shentianyu.entity.Category;
+import com.shentianyu.entity.Channel;
+import com.shentianyu.entity.User;
 import com.shentianyu.service.ArticleService;
 import com.shentianyu.service.CategoryService;
+import com.shentianyu.service.ChannelService;
+import com.shentianyu.service.ContentService;
 
 @Controller
 @RequestMapping("article")
@@ -27,6 +35,12 @@ public class ArticleController {
 	
 	@Autowired
 	private CategoryService categoryService;
+	
+	@Autowired
+	private ContentService contentService;
+	
+	@Autowired
+	private ChannelService channelService;
 	
 	/**
 	 * 设置上一篇 下一篇
@@ -42,7 +56,7 @@ public class ArticleController {
 			article = articleService.getArticleById(i);
 			System.out.println("article相邻的最近的是:" + article);
 			if(article != null) {
-				i = result--;
+				i = --result;
 				break;
 			}
 		}
@@ -82,11 +96,11 @@ public class ArticleController {
 	public String showArticle(int articleId, HttpServletRequest request) {
 		//去后台查询
 		Article article = articleService.getArticleById(articleId);
+		
 		System.out.println(article);
 		request.setAttribute("article", article);
 		return "article/showHotArticle";
 	}
-	
 	
 	/**
 	 * 
@@ -190,4 +204,18 @@ public class ArticleController {
 		return new MsgResult(1, null, categories);
 	}
 	
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

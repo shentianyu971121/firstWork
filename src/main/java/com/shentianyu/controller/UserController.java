@@ -3,6 +3,7 @@ package com.shentianyu.controller;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -21,12 +22,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.PageInfo;
+import com.google.gson.Gson;
 import com.shentianyu.common.ConstantClass;
 import com.shentianyu.common.MsgResult;
 import com.shentianyu.common.MyAssert;
 import com.shentianyu.entity.Article;
 import com.shentianyu.entity.Category;
 import com.shentianyu.entity.Channel;
+import com.shentianyu.entity.Image;
+import com.shentianyu.entity.TypeEnum;
 import com.shentianyu.entity.User;
 import com.shentianyu.service.ArticleService;
 import com.shentianyu.service.CategoryService;
@@ -62,6 +66,11 @@ public class UserController {
 		PageInfo hotList = articleService.getHotGetList(pageNum);
 		//查询最新的文章     
 		List<Article> newArticles = articleService.getNewArticles(5);
+		
+		// 获取最新图片文章
+		List<Article> imgArticles = articleService.getImgArticles(10);
+		
+		request.setAttribute("imgArticles", imgArticles);
 		request.setAttribute("hotList", hotList);
 		request.setAttribute("newArticles", newArticles);
 		return "user/userList";
@@ -292,4 +301,52 @@ public class UserController {
 				return new MsgResult(2,"失败",null);
 			}
 		}
+		
+		@RequestMapping(value = "uploadImg", method = RequestMethod.GET)
+		public String uploadImg(HttpServletRequest request) {
+			//首先去查询所有的频道信息  为了让前台页面进行回显
+			List<Channel> channels = channelService.getChannelList();
+			request.setAttribute("channels", channels);
+			
+			return "article/uploadImg";
+		}
+		
+		
+		@RequestMapping(value = "uploadImg", method = RequestMethod.POST)
+		@ResponseBody
+		public Object uploadImg(HttpServletRequest request,Article article,
+				MultipartFile file[],String desc[]) throws IllegalStateException, IOException {
+			//去session作用域查询user对象的值
+			User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
+			
+			List<Image> list = new ArrayList<Image>();
+			//遍历处理每个上传的文件的集合
+			for (int i = 0; i < file.length && i < desc.length; i++) {
+				//处理一下文件 和文件名什么 之类的
+				String url = processFile(file[i]);
+				//创建对象  将地址存在image对象中
+				Image image = new Image();
+				//因为是数组 所以将得到的对象存在集合中
+				image.setUrl(url);
+				image.setDesc(desc[i]);
+				list.add(image);
+			}
+			//创建gson对象   将list集合转换为json对象
+			Gson gson = new Gson();
+			//设置作者
+			article.setUserId(user.getId());
+			//list集合里面存的就是图片地址  和文章的描述  然后转换为json对象   就可以直接对象点属性然后就可以获取值了
+			article.setContent(gson.toJson(list));
+			//设置文章类型  是图片
+			article.setArticleType(TypeEnum.IMG);
+			//然后进行添加
+			int add = articleService.addArticle(article);
+			if(add > 0) {
+				return new  MsgResult(1, "添加成功", null);
+			}
+			return new  MsgResult(2, "添加失败", null);
+		}
+		
+		
+		
 }

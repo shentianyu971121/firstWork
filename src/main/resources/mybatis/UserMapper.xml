@@ -6,6 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="com.shentianyu.entity.User" id="userMap">
 		<id column="id" property="id"/>
 		<result column="gender" property="gender" javaType="com.shentianyu.entity.Gender" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+
 	</resultMap>
 	<!-- 直接进行查询 -->
 	<select id="getUserList" resultMap="userMap">

@@ -31,6 +31,10 @@
 		//然后让空白处加载这个文章
 		$("#contant").load(url);
 	}
+		//发布图片
+	function uploadImg() {
+		$("#contant").load("/user/uploadImg");
+	}
 	
 </script>
 </head>
@@ -72,6 +76,8 @@
 			  <li><a href="javaScript:uploadArticle('/user/postArticle')">发布文章</a></li>
 			  <li><a href="javaScript:myArticleList()">待审核</a></li>
 			  <li><a href="javaScript:myArticleDeleteList()">已删除</a></li>
+			  <li><a href="javaScript:uploadImg()">发布图片</a></li>
+			  <li><a href="#">我的收藏</a></li>
 			  <li><a href="#">设置</a></li>
 			  <li><a href="#">浏览历史</a></li>
 			</ul>

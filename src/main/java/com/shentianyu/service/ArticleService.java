@@ -165,5 +165,23 @@ public interface ArticleService {
 	 * @return: int
 	 */
 	int getMaxId();
+	/**
+	 * 
+	 * @Title: addArticle 
+	 * @Description: 添加图片
+	 * @param article
+	 * @return
+	 * @return: int
+	 */
+	int addArticle(Article article);
+	/**
+	 * 
+	 * @Title: getImgArticles 
+	 * @Description: 获取最新的文章和图片
+	 * @param i
+	 * @return
+	 * @return: List<Article>
+	 */
+	List<Article> getImgArticles(int i);
 
 }

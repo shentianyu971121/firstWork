@@ -223,7 +223,6 @@
 		</c:if>
 	</c:forEach>
 	</div>
-	
 		<!-- 文章列表展示结束*--------------------------------------------------------------------- -->
 		<div class="col-md-5">
 		<div style="margin-top: 10px"></div>
@@ -291,30 +290,21 @@
 <div class="col-md-3">
 	<!-- 输入框 -->
 	<div style="padding-right: 80px;">
-    <form class="bs-example bs-example-form" role="form" action="/loginOrRegister/login" method="post">
-        <div class="input-group">
-            <span class="input-group-addon">@</span>
-            <input type="text" class="form-control" placeholder="请输入邮箱">
-        </div>
-        <br>
-        <div class="input-group">
-        	<span class="input-group-addon">*</span>
-            <input type="text" class="form-control" name="username">
-            <span class="input-group-addon">账号</span>
-        </div>
-        <br>
-        <div class="input-group">
-            <span class="input-group-addon">*</span>
-            <input type="text" class="form-control" name="password">
-            <span class="input-group-addon">密码</span>
-        </div>
-        <button type="submit" class="btn btn-success" style="margin-left: 107px; margin-top: 20px">登录</button>
-   		 <button type="submit" class="btn btn-info" style="margin-left: 30px; margin-top: 20px">注册</button>
-    </form>
+    <div class="panel panel-danger">
+					<div class="panel-heading" style="text-align: center">
+						<h3 class="panel-title">图片文章</h3>
+					</div>
+					<div class="panel-body">
+						<c:forEach items="${imgArticles}" var="article" varStatus="index"> 
+							<a href="javascript:showArticle(${article.id})">${index.index}. ${article.title}</a>
+							<br/>
+						</c:forEach>
+					</div>
+	</div>
 </div>
 	<!-- 输入框 -->
 	<div class="panel panel-primary" style="width: 375px; margin-top: 10px">
-    <div class="panel-heading">
+    <div class="panel-heading"  style="text-align: center">
         <h3 class="panel-title">最新文章</h3>
     </div>
     <div class="panel-body">
@@ -329,9 +319,7 @@
 	<img alt="" src="/resource/images/1707D.jpg" width="400px" height="330px">
 </div>
 </div>
-	
 </div>
-	
 <!-- 底部导航栏....................... -->
 <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
     <div class="container-fluid">

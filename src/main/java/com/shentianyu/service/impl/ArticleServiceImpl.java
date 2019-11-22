@@ -135,5 +135,19 @@ public class ArticleServiceImpl implements ArticleService {
 		// TODO Auto-generated method stub
 		return articleMapper.getMaxId();
 	}
+	//添加图片
+	@Override
+	public int addArticle(Article article) {
+		// TODO Auto-generated method stub
+		return articleMapper.addArticle(article);
+	}
+	/**
+	 * 获取最新的文章图片
+	 */
+	@Override
+	public List<Article> getImgArticles(int i) {
+		// TODO Auto-generated method stub
+		return articleMapper.getImgArticles(i);
+	}
 
 }

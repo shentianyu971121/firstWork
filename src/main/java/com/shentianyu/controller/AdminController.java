@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
+import com.shentianyu.common.ConstantClass;
 import com.shentianyu.common.MsgResult;
+import com.shentianyu.common.MyAssert;
 import com.shentianyu.entity.User;
 import com.shentianyu.service.UserService;
 
@@ -22,10 +24,15 @@ public class AdminController {
 	
 	@RequestMapping("admin")
 	public String testAdmin(HttpServletRequest request) {
-		
+		//判断是否是管理员
+		User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
+		System.out.println("进入admin界面 ++++++ ++++++ ++ + + +  ++ ++  + " + user);
+		//然后进行判断
+		MyAssert.AssertTrue(user.getRole() == 1, "您不是管理员 没有权限进入此界面");
 		return "show/index";
 	}
 
+	
 	@Autowired
 	private UserService service;
 	

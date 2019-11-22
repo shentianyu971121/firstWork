@@ -2,6 +2,7 @@ package com.shentianyu.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class Article implements Serializable {
 
@@ -44,8 +45,8 @@ public class Article implements Serializable {
 	private Date updated;
 	//评论的数量
 	private int commentCnt;
-	//文章类型
-	private int  articleType;
+	//文章类型  并且赋初值 为html类型  数据库里面也就是0
+	private TypeEnum  articleType = TypeEnum.HTML;
 	public Integer getId() {
 		return id;
 	}
@@ -148,10 +149,10 @@ public class Article implements Serializable {
 	public void setCommentCnt(int commentCnt) {
 		this.commentCnt = commentCnt;
 	}
-	public int getArticleType() {
+	public TypeEnum getArticleType() {
 		return articleType;
 	}
-	public void setArticleType(int articleType) {
+	public void setArticleType(TypeEnum articleType) {
 		this.articleType = articleType;
 	}
 	public static long getSerialversionuid() {
@@ -159,7 +160,7 @@ public class Article implements Serializable {
 	}
 	public Article(Integer id, String title, String content, String picture, Integer channelId, Channel channel,
 			Integer categoryId, Category category, Integer userId, User user, int hits, int hot, int status,
-			int deleted, Date created, Date updated, int commentCnt, int articleType) {
+			int deleted, Date created, Date updated, int commentCnt, TypeEnum articleType) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -192,11 +193,6 @@ public class Article implements Serializable {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
-	
-	
-	
-	
 	
 	
 }

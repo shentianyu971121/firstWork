@@ -185,6 +185,33 @@ public interface ArticleMapper {
 	 */
 	@Select("SELECT MAX(id) from cms_article")
 	int getMaxId();
+	/**
+	 * 
+	 * @Title: addArticle 
+	 * @Description: 添加图片
+	 * @param article
+	 * @return
+	 * @return: int
+	 */
+	@Insert("INSERT INTO cms_article("
+			+ " title,content,picture,channel_id,category_id,"
+			+ " user_id,hits,hot,status,deleted,"
+			+ " created,updated,commentCnt,articleType) "
+			+ " values("
+			+ " #{title},#{content},#{picture},#{channelId},#{categoryId},"
+			+ "#{userId},#{hits},#{hot},#{status},#{deleted},"
+			+ "now(),now(),#{commentCnt},"
+			+ "#{articleType.ordinal})")
+	int addArticle(Article article);
+	/**
+	 * 
+	 * @Title: getImgArticles 
+	 * @Description: 获取图片的文章
+	 * @param i
+	 * @return
+	 * @return: List<Article>
+	 */
+	List<Article> getImgArticles(int i);
 }
 
 
