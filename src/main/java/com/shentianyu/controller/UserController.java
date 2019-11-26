@@ -29,6 +29,7 @@ import com.shentianyu.common.MyAssert;
 import com.shentianyu.entity.Article;
 import com.shentianyu.entity.Category;
 import com.shentianyu.entity.Channel;
+import com.shentianyu.entity.Favorite;
 import com.shentianyu.entity.Image;
 import com.shentianyu.entity.TypeEnum;
 import com.shentianyu.entity.User;
@@ -312,13 +313,15 @@ public class UserController {
 		}
 		
 		
+		
+		
 		@RequestMapping(value = "uploadImg", method = RequestMethod.POST)
 		@ResponseBody
 		public Object uploadImg(HttpServletRequest request,Article article,
 				MultipartFile file[],String desc[]) throws IllegalStateException, IOException {
+			System.out.println("测试一次额啊士大夫立刻三个来思考干净路上看见进攻两款手机功能是德国国内看到你给");
 			//去session作用域查询user对象的值
 			User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
-			
 			List<Image> list = new ArrayList<Image>();
 			//遍历处理每个上传的文件的集合
 			for (int i = 0; i < file.length && i < desc.length; i++) {
@@ -347,6 +350,29 @@ public class UserController {
 			return new  MsgResult(2, "添加失败", null);
 		}
 		
+		@RequestMapping(value = "myFavorite")
+		public String myFavorite(HttpServletRequest request, @RequestParam(defaultValue = "1")int pageNum) {
+			//首先去获取session作用域中的userId
+			User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
+			//然后通过UserId查询出来自己收藏的文章
+			PageInfo<Favorite> info = articleService.getFavoriteListByUserId(user.getId(), pageNum);
+			//然后将信息返回
+			request.setAttribute("info", info);
+			return "article/myFavorite";
+		}
+		@RequestMapping(value = "deleteFavorite")
+		@ResponseBody
+		public Object deleteFavorite(HttpServletRequest request, int id) {
+			//获取id的值 然后去后台进行删除
+			MyAssert.AssertTrue(id > 0, "id异常");
+			//然后进行删除
+			int result = articleService.deleteFavorite(id);
+			if(result > 0) {
+				return new MsgResult(1, "取消收藏成功", null);
+			} else {
+				return new MsgResult(2, "取消收藏失败", null);
+			}
+		}
 		
 		
 }

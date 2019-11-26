@@ -35,6 +35,10 @@
 	function uploadImg() {
 		$("#contant").load("/user/uploadImg");
 	}
+		//展示我的收藏
+	function myFavorite() {
+		$("#contant").load("/user/myFavorite");
+	}
 	
 </script>
 </head>
@@ -77,7 +81,7 @@
 			  <li><a href="javaScript:myArticleList()">待审核</a></li>
 			  <li><a href="javaScript:myArticleDeleteList()">已删除</a></li>
 			  <li><a href="javaScript:uploadImg()">发布图片</a></li>
-			  <li><a href="#">我的收藏</a></li>
+			  <li><a href="javaScript:myFavorite()">我的收藏</a></li>
 			  <li><a href="#">设置</a></li>
 			  <li><a href="#">浏览历史</a></li>
 			</ul>

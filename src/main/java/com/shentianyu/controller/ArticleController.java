@@ -7,19 +7,19 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.PageInfo;
+import com.google.gson.Gson;
 import com.shentianyu.common.ConstantClass;
 import com.shentianyu.common.MsgResult;
 import com.shentianyu.common.MyAssert;
+import com.shentianyu.entity.AdminFavorite;
 import com.shentianyu.entity.Article;
-import com.shentianyu.entity.ArticleSpeak;
 import com.shentianyu.entity.Category;
-import com.shentianyu.entity.Channel;
+import com.shentianyu.entity.Image;
+import com.shentianyu.entity.TypeEnum;
 import com.shentianyu.entity.User;
 import com.shentianyu.service.ArticleService;
 import com.shentianyu.service.CategoryService;
@@ -96,10 +96,23 @@ public class ArticleController {
 	public String showArticle(int articleId, HttpServletRequest request) {
 		//去后台查询
 		Article article = articleService.getArticleById(articleId);
-		
+		MyAssert.AssertTrue(article != null, "文章不存在");
 		System.out.println(article);
 		request.setAttribute("article", article);
-		return "article/showHotArticle";
+		
+		if(article.getArticleType() == TypeEnum.HTML) {
+			//判断如果是普通文章   就让其进行文章展示i 
+			return "article/showHotArticle";
+		} else {
+			//如果不是文章就是图片  让其进行幻灯片放映
+			//将文章转换为对象
+			Gson gson = new Gson();
+			List<Image> imgs = gson.fromJson(article.getContent(), List.class);
+			//然后将article里面的集合设置为得到的图片集合
+			article.setImages(imgs);
+			//然后跳转到幻灯片放映的地址
+			return "article/showImgArticle";
+		}
 	}
 	
 	/**
@@ -203,8 +216,44 @@ public class ArticleController {
 		//然后进行回显
 		return new MsgResult(1, null, categories);
 	}
+	/**
+	 * 
+	 * @Title: favorite 
+	 * @Description: 收藏文章
+	 * @param chnId
+	 * @return
+	 * @return: Object
+	 */
+	@RequestMapping("favorite")   //通过频道Id查询出来分类信息
+	@ResponseBody
+	public Object favorite(HttpServletRequest request, Integer articleId, Integer userId, String comment) {
+		System.out.println(" aslfhaslghasdlj slfkjsdf lksjls kjh sfh sdlkjf  ++++++++++ " + articleId + userId + comment);
+		//首先通过userId 查询文章的Id
+		User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
+		//然后进行添加到数据库
+		articleService.addFavorite(articleId, user.getId(), comment);
+		return new MsgResult(1, "收藏成功", null);
+	}
+	/**
+	 * 
+	 * @Title: getAdminFavorite 
+	 * @Description: 查询管理员的收藏的网址
+	 * @param request
+	 * @return
+	 * @return: String
+	 */
+	@RequestMapping("myFavorite")
+	public String getAdminFavorite(HttpServletRequest request, @RequestParam(defaultValue = "1")int pageNum) {
+		//返回收藏页面  
+		//首先获取session作用域中的id
+		User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
+		//然后通过user的id查询自己收藏的网址
+		PageInfo<AdminFavorite> info = articleService.getAdminFavorite(user.getId(), pageNum);
+		request.setAttribute("info", info);
+		return "admin/myFavorite";
+	}
 	
-
+	
 }
 
 

@@ -47,6 +47,8 @@ public class Article implements Serializable {
 	private int commentCnt;
 	//文章类型  并且赋初值 为html类型  数据库里面也就是0
 	private TypeEnum  articleType = TypeEnum.HTML;
+	//图片的集合
+	private List<Image> images;
 	public Integer getId() {
 		return id;
 	}
@@ -155,12 +157,18 @@ public class Article implements Serializable {
 	public void setArticleType(TypeEnum articleType) {
 		this.articleType = articleType;
 	}
+	public List<Image> getImages() {
+		return images;
+	}
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 	public Article(Integer id, String title, String content, String picture, Integer channelId, Channel channel,
 			Integer categoryId, Category category, Integer userId, User user, int hits, int hot, int status,
-			int deleted, Date created, Date updated, int commentCnt, TypeEnum articleType) {
+			int deleted, Date created, Date updated, int commentCnt, TypeEnum articleType, List<Image> images) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -180,6 +188,7 @@ public class Article implements Serializable {
 		this.updated = updated;
 		this.commentCnt = commentCnt;
 		this.articleType = articleType;
+		this.images = images;
 	}
 	@Override
 	public String toString() {
@@ -187,12 +196,13 @@ public class Article implements Serializable {
 				+ ", channelId=" + channelId + ", channel=" + channel + ", categoryId=" + categoryId + ", category="
 				+ category + ", userId=" + userId + ", user=" + user + ", hits=" + hits + ", hot=" + hot + ", status="
 				+ status + ", deleted=" + deleted + ", created=" + created + ", updated=" + updated + ", commentCnt="
-				+ commentCnt + ", articleType=" + articleType + "]";
+				+ commentCnt + ", articleType=" + articleType + ", images=" + images + "]";
 	}
 	public Article() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
 	
 	
 }

@@ -2,12 +2,15 @@ package com.shentianyu.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.shentianyu.entity.AdminFavorite;
 import com.shentianyu.entity.Article;
+import com.shentianyu.entity.Favorite;
 
 /**
  * 
@@ -212,7 +215,52 @@ public interface ArticleMapper {
 	 * @return: List<Article>
 	 */
 	List<Article> getImgArticles(int i);
+	
+	/**
+	 * 
+	 * @Title: addFavorite 
+	 * @Description: 添加信息到数据库中 并且进行替换
+	 * @param articleId
+	 * @param userId
+	 * @param comment
+	 * @return
+	 * @return: int
+	 */
+	@Insert("REPLACE cms_favorite (userId, articleId,comment,created) "
+			+ "VALUES (#{userId}, #{articleId},#{comment},now())")
+	void addFavorite(@Param("articleId")Integer articleId, @Param("userId")Integer userId, @Param("comment")String comment);
+	/**
+	 * 
+	 * @Title: getFavoriteListByUserId 
+	 * @Description: 通过UserId查询对象
+	 * @param id
+	 * @return
+	 * @return: List<Favorite>
+	 */
+	List<Favorite> getFavoriteListByUserId(Integer id);
+	/**
+	 * 
+	 * @Title: deleteFavorite 
+	 * @Description: 删除信息
+	 * @param id
+	 * @return
+	 * @return: int
+	 */
+	@Delete("DELETE  from cms_favorite where id = #{id}")
+	int deleteFavorite(int id);
+	/**
+	 * 
+	 * @Title: getAdminFavorite 
+	 * @Description: 通过管理员的id获取文章的id
+	 * @param id
+	 * @return
+	 * @return: List<AdminFavorite>
+	 */
+	@Select("SELECT * from cms_adminfavorite  WHERE  userid = #{id}")
+	List<AdminFavorite> getAdminFavorite(Integer id);
 }
+
+
 
 
 

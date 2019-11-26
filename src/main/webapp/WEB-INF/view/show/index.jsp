@@ -50,7 +50,7 @@
 		<div style="margin-left:20px ">
 			<ul class="nav nav-pills nav-stacked">
 			  <li class="active"><a href="javascript:showArticle('/article/allArticle')">文章列表</a></li>
-			  <li><a href="javascript:showFuction('/user/hello')">测试</a></li>
+			  <li><a href="javascript:showAdminFavorite('/article/myFavorite')">我的收藏</a></li>
 			  <li><a href="#">发布文章</a></li>
 			  <li>投票管理
 			  	<ul class="nav nav-pills nav-stacked">
@@ -84,6 +84,10 @@ role="navigation">
 	function exit() {
 		//这就是退出信息
 		location = "/loginOrRegister/exit";
+	}
+	
+	function showAdminFavorite(url) {
+		$("#content").load(url)	
 	}
 	
 </script>

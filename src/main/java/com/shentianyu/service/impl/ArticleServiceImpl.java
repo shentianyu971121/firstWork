@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.shentianyu.common.ConstantClass;
 import com.shentianyu.dao.ArticleMapper;
+import com.shentianyu.entity.AdminFavorite;
 import com.shentianyu.entity.Article;
+import com.shentianyu.entity.Favorite;
 import com.shentianyu.service.ArticleService;
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -149,5 +150,37 @@ public class ArticleServiceImpl implements ArticleService {
 		// TODO Auto-generated method stub
 		return articleMapper.getImgArticles(i);
 	}
+	/**
+	 * 添加收到到数据库
+	 */
+	@Override
+	public void addFavorite(Integer articleId, Integer userId, String comment) {
+		// TODO Auto-generated method stub
+		articleMapper.addFavorite(articleId, userId, comment);
+	}
+	/**
+	 * 通过UserId查询对象
+	 */
+	@Override
+	public PageInfo<Favorite> getFavoriteListByUserId(Integer id, int pageNum) {
+		// TODO Auto-generated method stub
+		PageHelper.startPage(pageNum, 5);
+		return new PageInfo<Favorite>(articleMapper.getFavoriteListByUserId(id));
+	}
+	//点击取消收藏   删除数据库里面的信息
+	@Override
+	public int deleteFavorite(int id) {
+		// TODO Auto-generated method stub
+		return articleMapper.deleteFavorite(id);
+	}
+	//通过文章获取iD
+	@Override
+	public PageInfo<AdminFavorite> getAdminFavorite(Integer id, int pageNum) {
+		//首先进行分页
+		PageHelper.startPage(pageNum, 5);
+		return new PageInfo<AdminFavorite>(articleMapper.getAdminFavorite(id));
+	}
+
+
 
 }

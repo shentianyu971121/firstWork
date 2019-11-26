@@ -91,7 +91,9 @@ $.post("/article/getCategoryByChannel",{chnId:channelId},function(data){
 			success:function(obj){
 				if(obj){
 					alert("发布成功!")
-					$('#content').load("/user/myarticlelist");
+					
+					alert("应该条状的")
+					$('#contant').load("/user/myArticle");
 				}else{
 					alert("发布失败")
 				}

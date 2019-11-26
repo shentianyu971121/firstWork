@@ -86,5 +86,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			ORDER BY created DESC 
 			LIMIT #{value}
 	</select>
-	
+	<!-- 获取最新的文章图片 -->
+	<select id="getFavoriteListByUserId" resultType="com.shentianyu.entity.Favorite" >
+		SELECT * FROM cms_favorite where userId = #{id} 
+	</select>
 </mapper>

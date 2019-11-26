@@ -18,12 +18,28 @@
 <body>
 <!-- 展示点击热门文章后的展示页面 -->
  <div class="container">
+ <nav class="navbar navbar-default" role="navigation">
+	<div class="container-fluid">
+	    <div class="navbar-header">
+	        <div class="panel-heading">
+		        <h2 class="panel-title">标题:       ${article.title }</h2>
+		        <h4 class="panel-title">作者:        ${article.user.username }</h4>
+		        <h4 class="panel-title">发布时间 :     <fmt:formatDate value="${article.created }" pattern="yyyy-MM-dd"/></h4>
+		    </div>
+	    </div>
+	        <ul class="nav navbar-nav navbar-right">
+			   <li class="dropdown">
+			   	<button type="button" class="btn btn-default btn-sm" style="margin-top: 19px; margin-right: 19px" onclick="favorite(${article.id},${article.user.id },  '${article.title }'  )" >
+			        <span class="glyphicon glyphicon-star">&nbsp;收藏</span>
+			    </button>
+				</li>
+			</ul>
+	    </div>
+
+</nav>
+ 
 <div class="panel panel-success">
-    <div class="panel-heading">
-        <h3 class="panel-title">${article.title }</h3>
-        <h4 class="panel-title">作者: ${article.user.username }</h4>
-        <h4 class="panel-title">发布时间 :<fmt:formatDate value="${article.created }" pattern="yyyy-MM-dd"/></h4>
-    </div>
+    
     <div class="panel-body">
     	<input type="hidden" name="userId" value="${article.user.id }">
     	<input type="hidden" name="articleId" value="${article.id }">
@@ -36,7 +52,6 @@
         	<input type="button" data-toggle="modal" data-target="#myModal" value="我要评论" class="btn btn-primary btn-lg btn-waring" style="margin-left: 72px" onclick="">
     </div>
 </div>
-
 <div class="container" id="content" >
 	
 </div>
@@ -93,6 +108,20 @@ function preArticle(id) {
 }
 function nextArticle(id) {
 	location = "/article/nextArticle?id="+id;
+}
+function favorite(articleId, userId, comment) {
+	$.post(
+	"/article/favorite",		
+	{articleId:articleId, userId:userId, comment:comment},
+	function(obj) {
+		if(obj.result == 1) {
+			alert("收藏成功")
+		} else {
+			alert(obj.errorMsg)
+		}
+	},
+	"json"
+	)
 }
 </script>
 </body>

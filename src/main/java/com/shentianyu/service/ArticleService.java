@@ -3,7 +3,9 @@ package com.shentianyu.service;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
+import com.shentianyu.entity.AdminFavorite;
 import com.shentianyu.entity.Article;
+import com.shentianyu.entity.Favorite;
 
 public interface ArticleService {
 
@@ -183,5 +185,45 @@ public interface ArticleService {
 	 * @return: List<Article>
 	 */
 	List<Article> getImgArticles(int i);
+	/**
+	 * 
+	 * @Title: addFavorite 
+	 * @Description: 添加到数据库
+	 * @param articleId
+	 * @param userId
+	 * @param comment
+	 * @return
+	 * @return: int
+	 */
+	void addFavorite(Integer articleId, Integer userId, String comment);
+	/**
+	 * 
+	 * @Title: getFavoriteListByUserId 
+	 * @Description: 通过Userid查询对象
+	 * @param id
+	 * @return
+	 * @return: List<Favorite>
+	 */
+	PageInfo<Favorite> getFavoriteListByUserId(Integer id, int pageNum);
+	/**
+	 * 
+	 * @Title: deleteFavorite 
+	 * @Description: 取消收藏   然后去数据库里面进行删除
+	 * @param id
+	 * @return
+	 * @return: int
+	 */
+	int deleteFavorite(int id);
+	/**
+	 * 
+	 * @Title: getAdminFavorite 
+	 * @Description: 通过userid获取文章
+	 * @param id
+	 * @param pageNum 
+	 * @return
+	 * @return: List<AdminFavorite>
+	 */
+	PageInfo<AdminFavorite> getAdminFavorite(Integer id, int pageNum);
+
 
 }
