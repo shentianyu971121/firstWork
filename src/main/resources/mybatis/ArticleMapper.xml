@@ -18,7 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getHotList" resultMap="articleMap">
 			SELECT id,title,picture,channel_id,category_id,user_id,hits,commentCnt,created
 			FROM cms_article 
-			WHERE deleted=0 AND status=1 AND hot=1 order by created desc
+			WHERE deleted=0 AND status=1 AND hot=1 order by created desc limit 10
 	</select>
 	<!-- 展示最新的信息 -->
 	<select id="getNewArticles" resultType="com.shentianyu.entity.Article">
@@ -88,6 +88,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	<!-- 获取最新的文章图片 -->
 	<select id="getFavoriteListByUserId" resultType="com.shentianyu.entity.Favorite" >
-		SELECT * FROM cms_favorite where userId = #{id} 
+		SELECT * FROM cms_favorite where userId = #{id} order by created desc
 	</select>
+	
+	<!-- 查询所有的信息  没被删除和审核通过的  要添加进 es中-->
+	<select id="getArticle" resultMap="articleMap">
+		SELECT * from cms_article where deleted = 0 and status = 1
+	</select>
+	
 </mapper>

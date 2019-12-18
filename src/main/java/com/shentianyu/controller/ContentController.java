@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
+import com.shentianyu.common.ConstantClass;
 import com.shentianyu.common.MsgResult;
 import com.shentianyu.common.MyAssert;
 import com.shentianyu.entity.ArticleSpeak;
+import com.shentianyu.entity.User;
 import com.shentianyu.service.ContentService;
 
 @Controller
@@ -35,15 +37,15 @@ public class ContentController {
 		//通过这个查询所有的信息
 		return "article/conment";
 	}
+	
 	@RequestMapping("upSpeak")
 	@ResponseBody
-	public Object upSpeak(HttpServletRequest request, Integer articleId,String content, Integer userId) {
-		System.out.println();
-		MyAssert.AssertTrue(userId > 0, "id有误");
+	public Object upSpeak(HttpServletRequest request, Integer articleId,String content) {
 		MyAssert.AssertTrue(articleId > 0, "id有误");
 		MyAssert.AssertTrue(content.trim().length() > 0, "请评论后提交");
-		//上传评论
-		int result = contentService.upSpeak(articleId, content, userId);
+		//上传评论  上传评论 不能上传作者的评论  要上传session作用域中的评论 
+		User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
+		int result = contentService.upSpeak(articleId, content, user.getId());
 		//评论 之后需要修改指定文章的评论数
 		contentService.updateCommentNum(articleId);
 		if(result >  0) {

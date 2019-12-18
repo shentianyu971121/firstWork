@@ -15,6 +15,13 @@
  <script type="text/javascript" src="/resource/kindeditor/kindeditor-all.js"></script>
 <title>个人中心</title>
 <script type="text/javascript">
+	//点击个人中心之后就会出现的信息   目前不需要
+	/* $(function() {
+		$("#contant").load("/user/index");
+	}) */
+	function showMyFavorite() {
+		$("#contant").load("/user/showMyFavorite");
+	}
 	function myArticle() {
 		//点击此处加载文章 就是去后台进行查询的文章
 		$("#contant").load("/user/myArticle");
@@ -81,8 +88,7 @@
 			  <li><a href="javaScript:myArticleList()">待审核</a></li>
 			  <li><a href="javaScript:myArticleDeleteList()">已删除</a></li>
 			  <li><a href="javaScript:uploadImg()">发布图片</a></li>
-			  <li><a href="javaScript:myFavorite()">我的收藏</a></li>
-			  <li><a href="#">设置</a></li>
+			  <li><a href="javaScript:showMyFavorite()">我的收藏夹</a></li>
 			  <li><a href="#">浏览历史</a></li>
 			</ul>
 		   </div>

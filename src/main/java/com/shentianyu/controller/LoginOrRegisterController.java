@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +31,10 @@ public class LoginOrRegisterController {
 	@Autowired
 	private LoginOrRegisterService loginOrRegisterService;
 	
+	@Autowired
+	private KafkaTemplate<String, String> kafkaTemplate;
+	@Autowired
+	RedisTemplate redisTemplate;
 	/**
 	 * 
 	 * @Title: login 
@@ -59,6 +65,7 @@ public class LoginOrRegisterController {
 		if(user1 != null && user1.getRole() == 0) { //普通用户登录
 			//将其存放在session作用于 中
 			HttpSession ss = request.getSession();
+			redisTemplate.delete("hotList");
 			//将其存放在session中
 			ss.setAttribute(ConstantClass.USER_SESSION_KEY, user1);
 			return "redirect:/user/userMain";

@@ -11,8 +11,13 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,16 +26,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import com.shentianyu.common.ConstantClass;
+import com.shentianyu.common.HLUtils;
 import com.shentianyu.common.MsgResult;
 import com.shentianyu.common.MyAssert;
+import com.shentianyu.dao.Article1707d2ES;
 import com.shentianyu.entity.Article;
 import com.shentianyu.entity.Category;
 import com.shentianyu.entity.Channel;
 import com.shentianyu.entity.Favorite;
 import com.shentianyu.entity.Image;
+import com.shentianyu.entity.MyFavorite;
 import com.shentianyu.entity.TypeEnum;
 import com.shentianyu.entity.User;
 import com.shentianyu.service.ArticleService;
@@ -44,7 +53,6 @@ public class UserController {
 	@Autowired
 	private ChannelService channelService;
 	
-	
 	//注入另外一个Service
 	@Autowired
 	private CategoryService categoryService;
@@ -53,13 +61,38 @@ public class UserController {
 	@Autowired
 	private ArticleService articleService;
 	
+	//注入kafka模板
+	@Autowired
+	KafkaTemplate<String, String> kafkaTemplate;
+	
+	@Autowired
+	private Article1707d2ES article1707d2es;
 	private SimpleDateFormat dateFormat;
 	
-	
-	@RequestMapping("userMain")
-	public String userMain(HttpServletRequest request,
-			@RequestParam(defaultValue = "1")int pageNum) {
-		//在这里面查询所有的频道 并且进行展示
+	@Autowired
+	ElasticsearchTemplate elasticsearchTemplate;
+	//es全局搜索信息
+	@RequestMapping("userMainEs")
+	public String searchAll(HttpServletRequest request, Model model, String key, @RequestParam(defaultValue = "1")int pageNum) {
+		/* List<Article> findByTitle = article1707d2es.findByTitle(key); */
+		AggregatedPage<?> selectObjects = HLUtils.selectObjects(elasticsearchTemplate, Article.class, pageNum, 3, new String[] {"title"}, "id", key);
+		List<Article> content = (List<Article>) selectObjects.getContent();
+		System.err.println(content);
+		PageInfo<Article> pageInfo = new  PageInfo<Article>(content);
+		pageInfo.setPageNum(pageNum);
+		pageInfo.setPageSize(3);
+		long size = selectObjects.getTotalElements();
+		//然后设置总共的数据条数
+		pageInfo.setTotal(size);
+		//计算一共有多少页
+		int pages = (int) (size % 3 == 0? size / 3:size / 3+1);
+		pageInfo.setPages(pages);
+		//设置下一页
+		pageInfo.setNextPage(pageNum + 1 > pages?pageNum:pageNum + 1);
+		//设置上一页
+		pageInfo.setPrePage(pageNum - 1 == 0?1:pageNum - 1);
+		
+		//在这里面查询所有的频道 
 		List<Channel> list = channelService.getChannelList();
 		//共享所有的频道
 		request.setAttribute("list", list);
@@ -67,15 +100,36 @@ public class UserController {
 		PageInfo hotList = articleService.getHotGetList(pageNum);
 		//查询最新的文章     
 		List<Article> newArticles = articleService.getNewArticles(5);
-		
 		// 获取最新图片文章
 		List<Article> imgArticles = articleService.getImgArticles(10);
-		
+		request.setAttribute("imgArticles", imgArticles);
+		request.setAttribute("newArticles", newArticles);
+		model.addAttribute("hotList", pageInfo);
+		model.addAttribute("key", key);
+		return "/user/userListHasEs";
+	}
+	
+	
+	
+	@RequestMapping("userMain")
+	public String userMain(HttpServletRequest request,
+			@RequestParam(defaultValue = "1")int pageNum) {
+		//在这里面查询所有的频道 
+		List<Channel> list = channelService.getChannelList();
+		//共享所有的频道
+		request.setAttribute("list", list);
+		//查询热门的所有信息  
+		PageInfo hotList = articleService.getHotGetList(pageNum);
+		//查询最新的文章     
+		List<Article> newArticles = articleService.getNewArticles(5);
+		// 获取最新图片文章
+		List<Article> imgArticles = articleService.getImgArticles(10);
 		request.setAttribute("imgArticles", imgArticles);
 		request.setAttribute("hotList", hotList);
 		request.setAttribute("newArticles", newArticles);
 		return "user/userList";
 	}
+	
 	
 	@RequestMapping("channel")//这里面有频道的ID  和分类的ID  和分页的信息
 	public String channelList( HttpServletRequest request,  
@@ -192,6 +246,11 @@ public class UserController {
 		article.setUserId(loginUser.getId());
 		System.out.println("article ++++++++++++++++++++++++++++ " +article);
 		int result = articleService.add(article);
+		//讲对象转换为String类型 发送给消费者
+		String jsonString = JSON.toJSONString(article);
+		//我们上传文章之后就将信息发送给kafka让其进行一些操作
+		kafkaTemplate.send("articles", "add="+jsonString);
+		
 		if(result>0) {
 			return new MsgResult(1, "处理成功",null);
 		}else {
@@ -241,6 +300,7 @@ public class UserController {
 	    	//然后获取作用域中的id 
 	    	User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
 	    	MyAssert.AssertTrue(articli.getUser().getId() == user.getId(), "只能删除自己的文章");
+	    	kafkaTemplate.send("articles", "del=" + articleId);
 	    	//然后进行返回json数据
 	    	return new MsgResult(1, "成功", null);
 	    }
@@ -295,6 +355,9 @@ public class UserController {
 				article.setPicture(picUrl);
 			}
 			int result = articleService.update(article);
+			//当我们 修改文章的时候就通知 kafka进行异步操作
+			String jsonString = JSON.toJSONString(article);
+			kafkaTemplate.send("articles", "update="+jsonString);
 			if(result>0) {
 				// 成功
 				return new MsgResult(1,"",null);
@@ -308,11 +371,8 @@ public class UserController {
 			//首先去查询所有的频道信息  为了让前台页面进行回显
 			List<Channel> channels = channelService.getChannelList();
 			request.setAttribute("channels", channels);
-			
 			return "article/uploadImg";
 		}
-		
-		
 		
 		
 		@RequestMapping(value = "uploadImg", method = RequestMethod.POST)
@@ -360,6 +420,7 @@ public class UserController {
 			request.setAttribute("info", info);
 			return "article/myFavorite";
 		}
+		
 		@RequestMapping(value = "deleteFavorite")
 		@ResponseBody
 		public Object deleteFavorite(HttpServletRequest request, int id) {
@@ -374,5 +435,64 @@ public class UserController {
 			}
 		}
 		
+		//点击 个人中心  出现展示i信息
+		@RequestMapping(value = "index")
+		public Object index(HttpServletRequest request) {
+			//获取session作用域中的信息
+			User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
+			request.setAttribute("user", user);
+			
+			return "user/index";
+		}
+		
+		//添加的信息
+		@RequestMapping(value = "addMyFavorite")
+		@ResponseBody
+		public Object addMyFavorite(HttpServletRequest request, Integer articleId, String title, String url) {
+			//获取session作用域中登录的信息
+			User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
+			MyAssert.AssertTrue(user.getId() > 0, "登录异常");
+			//然后去数据库添加
+			int result = articleService.addMyFavorite(articleId, title, url, user.getId());
+			if(result > 0) {
+				return new MsgResult(1, "成功添加", null);
+			} 
+			return new MsgResult(2, "添加失败", null);
+		}
+		
+		//点击 个人中心的我的收藏夹  出现展示i信息
+		@RequestMapping(value = "showMyFavorite")
+		public Object showMyFavorite(HttpServletRequest request, @RequestParam(defaultValue = "1")int pageNum) {
+			//首次获取session作用域中的值
+			User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
+			MyAssert.AssertTrue(user.getId() > 0, "登录异常");
+			//然后通过session作用域中的useid查询出我的收藏
+			PageInfo<MyFavorite> info = articleService.getMyFavorite(user.getId(), pageNum);
+			//然后将数据返回
+			request.setAttribute("info", info);
+			return "user/myFavorite";
+		}
+		//删除我的 收藏
+		@RequestMapping(value = "deleteMyFavorite")
+		@ResponseBody
+		public Object deleteMyFavorite(HttpServletRequest request,  Integer id) {
+			//判断值是否正确
+			MyAssert.AssertTrue(id > 0, "非法Id");
+			//然后进行删除
+			int result = articleService.deleteMyfavorite(id);
+			if(result > 0) {
+				return new  MsgResult(1, "删除成功", null);
+			} else {
+				return new  MsgResult(2, "删除失败", null);
+			}
+		}
+		
+		
+		
+		
 		
 }
+
+
+
+

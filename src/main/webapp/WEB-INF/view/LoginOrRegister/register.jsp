@@ -40,7 +40,12 @@
 	    </div>
 	  </div>
 	</form>
+	
 </div>
+	<div>
+		<p>已有帐号?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a  style="font-size: 24px" href="/loginOrRegister/login">去登录</a></p>
+	</div>
+
 </div>
 <script type="text/javascript">
 //reForm需要校验的话 校验规则可以在函数内部  页可以直接卸载标签的属性上

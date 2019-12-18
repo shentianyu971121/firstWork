@@ -118,7 +118,7 @@ function publish(){
 			success:function(obj){
 				if(obj){
 					alert("发布成功!")
-					location = "/user/userMain";
+					location = "/user/getArticleByUserId";
 				}else{
 					alert("发布失败")
 				}

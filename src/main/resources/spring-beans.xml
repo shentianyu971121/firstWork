@@ -8,6 +8,15 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 加载redis.xml -->
+	<import resource="classpath:redis.xml"/>
+	
+	<!-- 加载消费者 -->
+	<import resource="classpath:consumer.xml"/>
+	<!-- 加载生产者 -->
+	<import resource="classpath:producer.xml"/>
+	<!-- 加载es文件 -->
+	<import resource="classpath:es.xml"/>
 	<!-- 1、注解扫描器 -->
 	<!-- todo -->
 	<context:component-scan base-package="com.shentianyu" >

@@ -3,6 +3,7 @@ package com.shentianyu.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -11,6 +12,7 @@ import com.shentianyu.dao.ArticleMapper;
 import com.shentianyu.entity.AdminFavorite;
 import com.shentianyu.entity.Article;
 import com.shentianyu.entity.Favorite;
+import com.shentianyu.entity.MyFavorite;
 import com.shentianyu.service.ArticleService;
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -18,13 +20,23 @@ public class ArticleServiceImpl implements ArticleService {
 	//注入文章类的mapper接口
 	@Autowired
 	private ArticleMapper articleMapper;
-	//获取所有的热门集合
+	@Autowired
+	private RedisTemplate redisTemplate;
+	//获取所有的热门集合       加入了redis缓存
 	@Override
-	public PageInfo getHotGetList(int pageNum) {
-		//首先给热门进行分页
-		PageHelper.startPage(pageNum, 3);
+	public PageInfo<Article> getHotGetList(int pageNum) {
+		List<Article> range = redisTemplate.opsForList().range("hotList", 0, 9);
+		List<Article> hotList = null;
+		if(range == null || range.size() == 0) {
+			hotList = articleMapper.getHotList();
+			System.err.println("第一次使用mysql" + hotList.size());
+			redisTemplate.opsForList().leftPushAll("hotList",hotList.toArray());
+		} else {
+			System.err.println("第二次使用redis");
+			return new PageInfo(range);
+		}
 		
-		return new PageInfo(articleMapper.getHotList());
+		return new PageInfo(hotList);
 	}
 	//获取新的文章
 	@Override
@@ -40,6 +52,7 @@ public class ArticleServiceImpl implements ArticleService {
 		
 		return new PageInfo<Article>(articleMapper.getListByCat(chnId,categoryId));
 	}
+	
 	//通过ID查询出来对象
 	@Override
 	public Article getArticleById(int articleId) {
@@ -179,6 +192,28 @@ public class ArticleServiceImpl implements ArticleService {
 		//首先进行分页
 		PageHelper.startPage(pageNum, 5);
 		return new PageInfo<AdminFavorite>(articleMapper.getAdminFavorite(id));
+	}
+	//添加信息到我的收藏夹
+	@Override
+	public int addMyFavorite(Integer articleId, String title, String url, Integer userid) {
+		// TODO Auto-generated method stub
+		return articleMapper.addMyFavorite(articleId,title, url ,userid);
+	}
+	//通过userId查询我的收藏
+	@Override
+	public PageInfo<MyFavorite> getMyFavorite(Integer id, int pageNum) {
+		// 首先进行分页
+		PageHelper.startPage(pageNum, 3);
+		
+		return new PageInfo<MyFavorite>(articleMapper.getMyFavorite(id));
+	}
+	/**
+	 * 删除我的 收藏
+	 */
+	@Override
+	public int deleteMyfavorite(Integer id) {
+		// TODO Auto-generated method stub
+		return articleMapper.deleteMyfavorite(id);
 	}
 
 

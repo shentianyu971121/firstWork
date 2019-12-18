@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.shentianyu.entity.AdminFavorite;
 import com.shentianyu.entity.Article;
 import com.shentianyu.entity.Favorite;
+import com.shentianyu.entity.MyFavorite;
 
 public interface ArticleService {
 
@@ -224,6 +225,35 @@ public interface ArticleService {
 	 * @return: List<AdminFavorite>
 	 */
 	PageInfo<AdminFavorite> getAdminFavorite(Integer id, int pageNum);
+	/**
+	 * 
+	 * @Title: addMyFavorite 
+	 * @Description: 添加信息到我的收藏夹
+	 * @param articleId
+	 * @param title
+	 * @param url
+	 * @return
+	 * @return: int
+	 */
+	int addMyFavorite(Integer articleId, String title, String url, Integer id);
+	/**
+	 * 
+	 * @Title: getMyFavorite 
+	 * @Description: 通过id获取我收藏的值
+	 * @param id
+	 * @return
+	 * @return: PageInfo<MyFavorite>
+	 */
+	PageInfo<MyFavorite> getMyFavorite(Integer id, int pageNum);
+	/**
+	 * 
+	 * @Title: deleteMyfavorite 
+	 * @Description: 删除我的收藏
+	 * @param id
+	 * @return
+	 * @return: int
+	 */
+	int deleteMyfavorite(Integer id);
 
 
 }

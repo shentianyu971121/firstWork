@@ -1,9 +1,16 @@
 package com.shentianyu.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Favorite {
+public class Favorite implements Serializable{
 
+	/**
+	 * @fieldName: serialVersionUID
+	 * @fieldType: long
+	 * @Description: TODO
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private Integer userId;
 	private Integer articleId;

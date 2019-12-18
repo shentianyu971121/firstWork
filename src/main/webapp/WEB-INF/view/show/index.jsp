@@ -85,7 +85,6 @@ role="navigation">
 		//这就是退出信息
 		location = "/loginOrRegister/exit";
 	}
-	
 	function showAdminFavorite(url) {
 		$("#content").load(url)	
 	}

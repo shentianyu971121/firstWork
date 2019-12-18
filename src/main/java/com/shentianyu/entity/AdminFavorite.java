@@ -2,13 +2,16 @@ package com.shentianyu.entity;
 
 import java.util.Date;
 
+import javax.validation.constraints.Size;
+
 import org.hibernate.validator.constraints.URL;
 
 public class AdminFavorite {
 	
 	private Integer id;
+	@Size(min = 2, max = 8, message = "名称最少两个字,最多八个字")
 	private String name;
-	@URL
+	@URL(message = "请填写正确的url地址")
 	private String url;
 	private Integer userid;
 	private User user;

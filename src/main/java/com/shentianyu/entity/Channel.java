@@ -1,7 +1,15 @@
 package com.shentianyu.entity;
 
-public class Channel {
+import java.io.Serializable;
 
+public class Channel implements Serializable{
+
+	/**
+	 * @fieldName: serialVersionUID
+	 * @fieldType: long
+	 * @Description: TODO
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String name;
 	private String description;

@@ -21,7 +21,6 @@
 		<a href="javaScript:goPage('/articleContent/hotSpeak?pageNum=${info.prePage }&articleId=${articleId }')">上一页</a>
 		<a href="javaScript:goPage('/articleContent/hotSpeak?pageNum=${info.nextPage }&articleId=${articleId }')">下一页</a>
 		<a href="javaScript:goPage('/articleContent/hotSpeak?pageNum=${info.pages }&articleId=${articleId }')">尾页</a>
-
 </div>
 <!-- <div class="container" style="text-align: center; margin-top: 10px">
 

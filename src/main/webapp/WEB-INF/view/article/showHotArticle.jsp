@@ -29,9 +29,10 @@
 	    </div>
 	        <ul class="nav navbar-nav navbar-right">
 			   <li class="dropdown">
-			   	<button type="button" class="btn btn-default btn-sm" style="margin-top: 19px; margin-right: 19px" onclick="favorite(${article.id},${article.user.id },  '${article.title }'  )" >
-			        <span class="glyphicon glyphicon-star">&nbsp;收藏</span>
-			    </button>
+			   	<%-- <button type="button" class="btn btn-default btn-sm" style="margin-top: 19px; margin-right: 19px" onclick="favorite(${article.id},${article.user.id },  '${article.title }'  )" >
+			        <span class="glyphicon glyphicon-star">&nbsp; shoucang </span>
+			    </button> --%>
+			    <input type="button" value="加入我的收藏夹" onclick="addMyFavorite(${article.id}, '${article.title }')">
 				</li>
 			</ul>
 	    </div>
@@ -79,6 +80,24 @@
 </div>
 
 <script type="text/javascript">
+
+//展示加入我的收藏夹
+function addMyFavorite(articleId, title) {
+	var url = window.location.href
+	$.post(
+	"/user/addMyFavorite",		
+	{articleId:articleId,title:title, url:url},
+	function(obj) {
+		if(obj.result == 1) {
+			alert("添加成功")
+		} else {
+			alert("添加失败")
+		}
+	},
+	"json"
+	)
+}
+
 $(function() {
 	$("#content").load("/articleContent/hotSpeak?articleId=${article.id }")
 })
@@ -90,7 +109,7 @@ function upSpeak() {
 	var articleId = $("[name=articleId]").val()
 	$.post(
 		"/articleContent/upSpeak",	
-		{content:content, userId:userId, articleId:articleId},
+		{content:content, articleId:articleId},
 		function(obj) {
 			if(obj.result == 1) {
 				alert("评论成功")

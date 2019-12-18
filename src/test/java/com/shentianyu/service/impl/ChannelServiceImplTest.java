@@ -27,5 +27,4 @@ public class ChannelServiceImplTest {
 			System.out.println(channel);
 		}
 	}
-
 }

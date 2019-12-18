@@ -47,6 +47,11 @@
 	  </div>
 	</form>
 </div>
+	<div>
+		<p>没有帐号?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a style="font-size: 24px" href="/loginOrRegister/register">去注册</a></p>
+	</div>
+
+
 </div>
 
 <script type="text/javascript">

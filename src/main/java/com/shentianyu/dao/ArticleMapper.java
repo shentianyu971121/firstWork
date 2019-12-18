@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Update;
 import com.shentianyu.entity.AdminFavorite;
 import com.shentianyu.entity.Article;
 import com.shentianyu.entity.Favorite;
+import com.shentianyu.entity.MyFavorite;
 
 /**
  * 
@@ -146,7 +147,7 @@ public interface ArticleMapper {
 			+ " values("
 			+ " #{title},#{content},#{picture},#{channelId},#{categoryId},"
 			+ "#{userId},#{hits},#{hot},#{status},#{deleted},"
-			+ "now(),now(),#{commentCnt},#{articleType})")
+			+ "now(),now(),#{commentCnt},#{articleType.ordinal})")
 	int add(Article article);
 	/**
 	 * 
@@ -258,6 +259,48 @@ public interface ArticleMapper {
 	 */
 	@Select("SELECT * from cms_adminfavorite  WHERE  userid = #{id}")
 	List<AdminFavorite> getAdminFavorite(Integer id);
+	/**
+	 * 
+	 * @Title: addMyFavorite 
+	 * @Description: 添加信息到我的收藏夹
+	 * @param articleId
+	 * @param title
+	 * @param url
+	 * @param userid 
+	 * @return
+	 * @return: int
+	 */
+	@Insert("INSERT into cms_favorite_month (text,url,user_id,created) "
+			+ "VALUES (#{title},#{url}, #{userId}, now() )")
+	int addMyFavorite(@Param("articleId")Integer articleId, @Param("title")String title, @Param("url")String url, @Param("userId")Integer userid);
+	/**
+	 * 
+	 * @Title: getMyFavorite 
+	 * @Description: 通过userId查询我的收藏夹
+	 * @param id
+	 * @return
+	 * @return: List<MyFavorite>
+	 */
+	@Select("SELECT * from cms_favorite_month WHERE user_id = #{id}")
+	List<MyFavorite> getMyFavorite(Integer id);
+	/**
+	 * 
+	 * @Title: deleteMyfavorite 
+	 * @Description: 删除我的收藏
+	 * @param id
+	 * @return
+	 * @return: int
+	 */
+	@Delete("delete  from cms_favorite_month WHERE id = #{id}")
+	int deleteMyfavorite(Integer id);
+	/**
+	 * 
+	 * @Title: getArticle 
+	 * @Description: 查询所有的未被删除的和已经审核通过的信息
+	 * @return
+	 * @return: List<Article>
+	 */
+	List<Article> getArticle();
 }
 
 

@@ -18,10 +18,37 @@
 function goUrl(url) {
 	location="/"+url 
 }
+function addAdminFavorite() {
+	//收藏之后去另外一个页面进行添加
+	location = "/admin/addAdminFavorite";
+		
+}
+
+//取消收藏
+function noFavorite(id) {
+	$.post(
+	"/admin/noFavorite",		
+	{id:id},
+	function(obj) {
+		if(obj.result == 1) {
+			alert("已取消")
+			$("#content").load("/article/myFavorite");
+		} else if(obj.result == 2) {
+			alert("取消失败")
+		} else {
+			alert(obj.errorMsg)
+		}
+	},
+	"json"
+	)
+}
+
 
 </script>
 </head>
 <body>
+
+
 <div class="table-responsive">
  	<table class="table">
  		<caption>${USER_SESSION_KEY.username }收藏</caption>
@@ -31,25 +58,43 @@ function goUrl(url) {
 	        <th>名称</th>
 	        <th>地址</th>
 	        <th>收藏时间</th>
-	        <th>操作</th>
+	        <th>操作
+	        	<input type="button" value="添加" class="btn btn-primary" onclick="addAdminFavorite()">
+	        </th>
 	       </tr>
  		</thead>
  		<tbody>
  			<c:forEach items="${info.list }" var="list">
  				<tr>
  				<th>${list.userid }</th>
-		        <th><a href="https://www.baidu.com/">${list.name }</a></th>
+		        <th><a href="${list.url }">${list.name }</a></th>
 		        <th>${list.url }</th>
 		        <th>
 		        	<fmt:formatDate value="${list.created }" pattern="yyyy-MM-dd"/>
 		        </th>
 		        <th>
-		        	<input type="button" value="取消收藏">
+		        	<input type="button" value="取消收藏" onclick="noFavorite(${list.id})">
 		        </th>
 			     </tr>
  			</c:forEach>
+ 			<tr>
+ 				<td colspan="10">
+ 					共${info.total }条数据,当前${info.pageNum } / ${info.pages }页
+					<a href="javaScript:goPage('/article/myFavorite?pageNum=1')">首页</a>
+					<a href="javaScript:goPage('/article/myFavorite?pageNum=${info.prePage }')">上一页</a>
+					<a href="javaScript:goPage('/article/myFavorite?pageNum=${info.nextPage }')">下一页</a>
+					<a href="javaScript:goPage('/article/myFavorite?pageNum=${info.pages }')">尾页</a>
+ 				</td>
+ 			</tr>
  		</tbody>
  	</table>
  </div>
+ <script type="text/javascript">
+ function goPage(url) {
+	$("#content").load(url);
+}
+ 
+ </script>
+ 
 </body>
 </html>

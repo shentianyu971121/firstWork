@@ -35,7 +35,7 @@
 		})
 	})
 	function goPage(page) {
-		var url = "/user/userMainEs?pageNum=" + page;
+		var url = "/user/userMainEs?pageNum=" + page+"&key=${key}";
 		location = url;
 	}
 	function showArticle(articleId) {
@@ -68,7 +68,7 @@
 			</ul>
 	        
 	    </div>
-	        <form class="navbar-form navbar-left" role="search" action="/user/userMainEs" method="post">
+	        <form class="navbar-form navbar-left" role="search" action="/user/searchAll" method="post">
 	            <div class="form-group">
 	                <input type="text" class="form-control" placeholder="Search" name="key">
 	            </div>
@@ -160,7 +160,7 @@
       <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
       <li data-target="#myCarousel" data-slide-to="1"></li>
       <li data-target="#myCarousel" data-slide-to="2"></li>
-   </ol>
+   </ol>   
    <!-- 轮播（Carousel）项目 -->
    <div class="carousel-inner">
       <div class="item active">
@@ -215,7 +215,7 @@
 				<ul class="pagination">
 				  <li> <a href="javascript:goPage(${hotList.prePage })">&laquo;</a> </li>
 				  	<c:forEach begin="${hotList.pageNum - 2 > 1?hotList.pageNum - 2 : 1 }" end="${hotList.pageNum + 2 > hotList.pages?hotList.pages:hotList.pageNum + 2 }" varStatus="index">
-				  		<li> <a href="javascript:goPage(${index.index })">${index.index }</a> </li>
+				  		<li> <a href="javascript:goPage(${index.index })" style="color = ${index.index==hotList.pageNum?'red':'pink' }">${index.index }</a> </li>
 				  	</c:forEach>
 				  <li> <a href="javascript:goPage(${hotList.nextPage })">&raquo;</a> </li>
 				  <li><span>当前${hotList.pageNum } / ${hotList.pages }页</span></li>

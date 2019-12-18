@@ -4,6 +4,14 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Document(indexName = "cms_article", type = "article")
 public class Article implements Serializable {
 
 	/**
@@ -13,23 +21,29 @@ public class Article implements Serializable {
 	 */
 	private static final long serialVersionUID = 4360745322968649468L;
 
+	@Id
 	private Integer id;
 	//这个是文章的标题
+	@Field(index = true, store = true, analyzer = "ik_smart", searchAnalyzer = "ik_smart", type = FieldType.text)
 	private String title;
 	//文章的内容
+	@Field(index = true, store = true, analyzer = "ik_smart", searchAnalyzer = "ik_smart", type = FieldType.text)
 	private String content;
 //	文章的地址
 	private String picture;
 //	这个就是频道ID
 	private Integer channelId;
 //	创建频道对象  因为需要在数据库中查询频道
+	@JsonIgnore
 	private Channel channel;
 	//cateGory是文章的ID
 	private Integer categoryId;
 	//创建文章的对象 因为也需要查询文章的信息
+	@JsonIgnore
 	private Category category;
 	//user对象的id  因为article里面也有user查询
 	private Integer userId;
+	@JsonIgnore
 	private User user;
 	//是点击数量
 	private int hits;
@@ -46,8 +60,10 @@ public class Article implements Serializable {
 	//评论的数量
 	private int commentCnt;
 	//文章类型  并且赋初值 为html类型  数据库里面也就是0
+	@JsonIgnore
 	private TypeEnum  articleType = TypeEnum.HTML;
 	//图片的集合
+	@JsonIgnore
 	private List<Image> images;
 	public Integer getId() {
 		return id;

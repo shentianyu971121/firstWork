@@ -5,11 +5,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import com.shentianyu.common.ConstantClass;
@@ -42,8 +46,13 @@ public class ArticleController {
 	@Autowired
 	private ChannelService channelService;
 	
+	@Autowired
+	private RedisTemplate redisTemplate;
+	
+	@Autowired
+	private KafkaTemplate<String, String> kafkaTemplate;
 	/**
-	 * 设置上一篇 下一篇
+	 * 设置上一篇 下一篇   
 	 */
 	@RequestMapping("nextArticle")
 	public String nextArticle(Integer id,  HttpServletRequest request) {
@@ -96,6 +105,8 @@ public class ArticleController {
 	public String showArticle(int articleId, HttpServletRequest request) {
 		//去后台查询
 		Article article = articleService.getArticleById(articleId);
+		//获取session作用域中的对象‘
+		User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
 		MyAssert.AssertTrue(article != null, "文章不存在");
 		System.out.println(article);
 		request.setAttribute("article", article);
@@ -166,8 +177,11 @@ public class ArticleController {
 		Article article = articleService.showArticleById(id);
 		System.out.println("article +++++++++++++++++++++++ " + article);
 		MyAssert.AssertTrue(article != null, "对不起没有查询出来值");
+		String jsonString = JSON.toJSONString(article);
+		JSONObject parseObject = JSON.parseObject(jsonString);
+		System.err.println(parseObject);
 		//然后进行回显
-		return new MsgResult(1, null, article);
+		return new MsgResult(1, null, parseObject);
 	}
 	
 	@RequestMapping("adminUpdateStatus")   //审核通过和不通过
@@ -182,6 +196,13 @@ public class ArticleController {
 		//然后进行修改
 		int result = articleService.adminUpdateStatus(id,status);
 		MyAssert.AssertTrue(result > 0, "修改失败");
+		//修改成功之后进行通知kafka删除集合  
+		/* redisTemplate.delete("hotList"); */
+		kafkaTemplate.send("articles", "add");
+		System.err.println("修改成功-------------------------------------------------");
+		/*
+		 * redisTemplate.delete("hotList"); redisTemplate.delete("channelList");
+		 */
 		//然后进行回显
 		return new MsgResult(1, "修改成功", null);
 	}
@@ -200,6 +221,7 @@ public class ArticleController {
 		//然后进行修改
 		int result = articleService.adminUpdateHot(id,hot);
 		MyAssert.AssertTrue(result > 0, "修改失败");
+		kafkaTemplate.send("articles", "add");
 		//然后进行回显
 		return new MsgResult(1, "修改成功", null);
 	}

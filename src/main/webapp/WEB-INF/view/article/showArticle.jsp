@@ -29,12 +29,12 @@
             <h4 class="modal-title" id="myModalLabel">
             	<!--这里面写标题 -->
              </h4>
-            <h5 class="modal-title" id="author">
+            <h4 class="modal-title" id="author">
             	<!--这里面写标题 -->
-             </h5>
-            <h5 class="modal-title" id="channel">
+             </h4>
+            <h4 class="modal-title" id="channel">
             	<!--这里面写标题 -->
-             </h5>
+             </h4>
          </div>
          <div class="modal-body" id="content1111" style="height:500px;overflow-x:scroll;overflow-y:scroll"> 
          </div>
@@ -117,6 +117,7 @@
 		"json"
 		)
 	}
+  	
   	/* 点击审核时候需要回显信息  也就是使用ajax回显 */
   	function showArticle(id) {
 		//去后台展示信息
@@ -125,11 +126,13 @@
 		{id:id},
 		function(obj) {
 			if(obj.result == 1) {
+			alert(JSON.stringify(obj.data.content))
 				$("[name=articleId]").val(obj.data.id)
-				 $("#myModalLabel").text(obj.data.title)		
-				 $("#author").text("作者 : " + obj.data.user.username)		
+				 $("#myModalLabel").text(obj.data.title)
+				  $("#content1111").html(obj.data.content)	
 				 $("#channel").text("频道 : " + obj.data.channel.name +  "  分类:" + obj.data.category.name)		
-				 $("#content1111").html(obj.data.content)	
+				 $("#author").text("作者 : " + obj.data.user.username)		
+				
 			} else {
 				alert(obj.errorMsg)
 			}
