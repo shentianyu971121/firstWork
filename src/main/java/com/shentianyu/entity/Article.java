@@ -20,7 +20,7 @@ public class Article implements Serializable {
 	 * @Description: TODO
 	 */
 	private static final long serialVersionUID = 4360745322968649468L;
-
+	
 	@Id
 	private Integer id;
 	//这个是文章的标题
@@ -34,16 +34,17 @@ public class Article implements Serializable {
 //	这个就是频道ID
 	private Integer channelId;
 //	创建频道对象  因为需要在数据库中查询频道
-	@JsonIgnore
+	/* @JsonIgnore */
 	private Channel channel;
 	//cateGory是文章的ID
 	private Integer categoryId;
 	//创建文章的对象 因为也需要查询文章的信息
-	@JsonIgnore
+	//jsonIgnore就是为了让高量忽略对象  现在直接在工具类中忽略  不用这个注解的原因是因为其他用到对象的json字符串会报错
+	/* @JsonIgnore */
 	private Category category;
 	//user对象的id  因为article里面也有user查询
 	private Integer userId;
-	@JsonIgnore
+	/* @JsonIgnore */
 	private User user;
 	//是点击数量
 	private int hits;
@@ -60,10 +61,10 @@ public class Article implements Serializable {
 	//评论的数量
 	private int commentCnt;
 	//文章类型  并且赋初值 为html类型  数据库里面也就是0
-	@JsonIgnore
+	/* @JsonIgnore */
 	private TypeEnum  articleType = TypeEnum.HTML;
 	//图片的集合
-	@JsonIgnore
+	/* @JsonIgnore */
 	private List<Image> images;
 	public Integer getId() {
 		return id;

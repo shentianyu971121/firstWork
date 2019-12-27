@@ -1,12 +1,14 @@
 package com.shentianyu.controller;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,6 +53,10 @@ public class ArticleController {
 	
 	@Autowired
 	private KafkaTemplate<String, String> kafkaTemplate;
+	//注入线程池的类
+	@Autowired
+	private ThreadPoolTaskExecutor poolTaskExecutor;
+	
 	/**
 	 * 设置上一篇 下一篇   
 	 */
@@ -103,8 +109,16 @@ public class ArticleController {
 	 */
 	@RequestMapping("showArticle")
 	public String showArticle(int articleId, HttpServletRequest request) {
+		
 		//去后台查询
 		Article article = articleService.getArticleById(articleId);
+		/**
+		 * 现在请你利用Kafka进行流量削峰。当用户浏览文章时，
+		 * 往Kafka发送文章ID，在消费端获取文章ID，再执行数据库加1操作。
+		 */
+		//在文章详情页Controller方法里调用Kafka生产发送当前文章ID
+		kafkaTemplate.send("articles", "hits=" + articleId);
+		
 		//获取session作用域中的对象‘
 		User user = (User) request.getSession().getAttribute(ConstantClass.USER_SESSION_KEY);
 		MyAssert.AssertTrue(article != null, "文章不存在");
@@ -177,11 +191,13 @@ public class ArticleController {
 		Article article = articleService.showArticleById(id);
 		System.out.println("article +++++++++++++++++++++++ " + article);
 		MyAssert.AssertTrue(article != null, "对不起没有查询出来值");
-		String jsonString = JSON.toJSONString(article);
-		JSONObject parseObject = JSON.parseObject(jsonString);
-		System.err.println(parseObject);
+		//一开始是因为实体类里面有忽略json的注解（和高量搜索冲突）  现在直接更改实体类就行
+		/*
+		 * String jsonString = JSON.toJSONString(article); JSONObject parseObject =
+		 * JSON.parseObject(jsonString); System.err.println(parseObject);
+		 */
 		//然后进行回显
-		return new MsgResult(1, null, parseObject);
+		return new MsgResult(1, null, article);
 	}
 	
 	@RequestMapping("adminUpdateStatus")   //审核通过和不通过
@@ -198,7 +214,7 @@ public class ArticleController {
 		MyAssert.AssertTrue(result > 0, "修改失败");
 		//修改成功之后进行通知kafka删除集合  
 		/* redisTemplate.delete("hotList"); */
-		kafkaTemplate.send("articles", "add");
+		kafkaTemplate.send("articles", "del");
 		System.err.println("修改成功-------------------------------------------------");
 		/*
 		 * redisTemplate.delete("hotList"); redisTemplate.delete("channelList");
@@ -221,7 +237,7 @@ public class ArticleController {
 		//然后进行修改
 		int result = articleService.adminUpdateHot(id,hot);
 		MyAssert.AssertTrue(result > 0, "修改失败");
-		kafkaTemplate.send("articles", "add");
+		kafkaTemplate.send("articles", "del");
 		//然后进行回显
 		return new MsgResult(1, "修改成功", null);
 	}

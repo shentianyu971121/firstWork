@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.Update;
 
 import com.shentianyu.entity.AdminFavorite;
@@ -122,7 +123,6 @@ public interface ArticleMapper {
 	@Update("UPDATE cms_article set status = ${status} WHERE id = ${id}")
 	int adminUpdateStatus(@Param("id")Integer id, @Param("status")Integer status);
 	/**
-	 * 
 	 * @Title: adminUpdateHot 
 	 * @Description: 修改为热门非热门 就是热门 的话就是 一定审核通过
 	 * @param id
@@ -148,6 +148,7 @@ public interface ArticleMapper {
 			+ " #{title},#{content},#{picture},#{channelId},#{categoryId},"
 			+ "#{userId},#{hits},#{hot},#{status},#{deleted},"
 			+ "now(),now(),#{commentCnt},#{articleType.ordinal})")
+	@SelectKey(before = false, keyProperty = "id", resultType = Integer.class, statement = { "select LAST_INSERT_ID()" })
 	int add(Article article);
 	/**
 	 * 
@@ -301,6 +302,15 @@ public interface ArticleMapper {
 	 * @return: List<Article>
 	 */
 	List<Article> getArticle();
+	/**
+	 * 
+	 * @Title: updateHits 
+	 * @Description: 修改访问量
+	 * @param article
+	 * @return: void
+	 */
+	@Update("update cms_article set hits = #{hits} where id = #{id}")
+	void updateHits(Article article);
 }
 
 

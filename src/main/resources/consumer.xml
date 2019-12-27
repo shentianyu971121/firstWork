@@ -53,7 +53,7 @@
 	</bean>
 
 	<!--指定具体监听类的bean 这个类需要我们手工写-->  <!-- TODO -->
-	<bean id="messageListernerConsumerService" class="com.shentianyu.consumer.Consumer" />
+	<bean id="messageListernerConsumerService" class="com.shentianyu.consumer.ConsumerMonth" />
 	
 	
 </beans>

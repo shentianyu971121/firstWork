@@ -215,6 +215,12 @@ public class ArticleServiceImpl implements ArticleService {
 		// TODO Auto-generated method stub
 		return articleMapper.deleteMyfavorite(id);
 	}
+	//增加 访问量
+	@Override
+	public void updateHits(Article article) {
+		// TODO Auto-generated method stub
+		articleMapper.updateHits(article);
+	}
 
 
 

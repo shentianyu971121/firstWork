@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<association property="category" column="category_id" select="com.shentianyu.dao.CategoryMapper.findById"  />
 	</resultMap>
 	
+	
 	<!-- 首先是热门展示   展示所有的信息 -->
 	<select id="getHotList" resultMap="articleMap">
 			SELECT id,title,picture,channel_id,category_id,user_id,hits,commentCnt,created
@@ -90,10 +91,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getFavoriteListByUserId" resultType="com.shentianyu.entity.Favorite" >
 		SELECT * FROM cms_favorite where userId = #{id} order by created desc
 	</select>
-	
 	<!-- 查询所有的信息  没被删除和审核通过的  要添加进 es中-->
 	<select id="getArticle" resultMap="articleMap">
 		SELECT * from cms_article where deleted = 0 and status = 1
 	</select>
+
+	
+	
 	
 </mapper>

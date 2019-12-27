@@ -254,6 +254,14 @@ public interface ArticleService {
 	 * @return: int
 	 */
 	int deleteMyfavorite(Integer id);
+	/**
+	 * 
+	 * @Title: updateHits 
+	 * @Description: 修改访问量
+	 * @param article
+	 * @return: void
+	 */
+	void updateHits(Article article);
 
 
 }

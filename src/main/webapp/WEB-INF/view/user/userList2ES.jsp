@@ -35,7 +35,7 @@
 		})
 	})
 	function goPage(page) {
-		var url = "/user/userMainEs?pageNum=" + page;
+		var url = "/user/userMainEs?pageNum="+ page+"&key=${key}";
 		location = url;
 	}
 	function showArticle(articleId) {

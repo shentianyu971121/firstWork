@@ -21,7 +21,7 @@ public class ChannelServiceImplTest {
 	
 	@Test
 	public void test() {
-		//然后尽心测试
+		//然后进行测试
 		List<Channel> channelList = channelMapper.getChannelList();
 		for (Channel channel : channelList) {
 			System.out.println(channel);

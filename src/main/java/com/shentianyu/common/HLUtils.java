@@ -154,7 +154,8 @@ public class HLUtils {
 										field.setAccessible(true);
 										// 字段名称
 										String fieldName = field.getName();
-										if (!fieldName.equals("serialVersionUID")&&!fieldName.equals("user")) {
+										if (!fieldName.equals("serialVersionUID")&&!fieldName.equals("user")&&!fieldName.equals("channel")
+												&&!fieldName.equals("category")&&!fieldName.equals("articleType")&&!fieldName.equals("images")) {
 											HighlightField highlightField = searchHit.getHighlightFields()
 													.get(fieldName);
 											if (highlightField != null) {
